@@ -39,6 +39,8 @@ Table brandMaster {
 Table vM {
   idVM Int [pk, increment]
   vmName String
+  pass String [not null]
+  location ETaskLocation [not null]
   vCPU Int [not null]
   ram Int [not null]
   disk Int [not null]
@@ -78,6 +80,16 @@ Enum ERole {
   admin
   manager
   member
+}
+
+Enum ETaskLocation {
+  BRAZIL_SOUTH
+  BRAZIL_SOUTHEAST
+  BRAZIL_NORTHEAST
+  US_EAST
+  US_WEST
+  EUROPE
+  ASIA
 }
 
 Ref: vM.idBrandMaster > brandMaster.idBrandMaster

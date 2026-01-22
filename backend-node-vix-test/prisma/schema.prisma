@@ -53,6 +53,8 @@ model brandMaster {
 model vM {
   idVM          Int          @id @default(autoincrement())
   vmName        String?
+  pass          String
+  location      ETaskLocation
   vCPU          Int
   ram           Int
   disk          Int
@@ -97,4 +99,14 @@ enum ERole {
   admin
   manager
   member
+}
+
+enum ETaskLocation {
+  BRAZIL_SOUTH
+  BRAZIL_SOUTHEAST
+  BRAZIL_NORTHEAST
+  US_EAST
+  US_WEST
+  EUROPE
+  ASIA
 }
