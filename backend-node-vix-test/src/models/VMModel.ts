@@ -73,11 +73,11 @@ export class VMModel {
     return { totalCount, result: vms };
   }
 
-  async createNewVM(data: TVMCreate) {
-    return await prisma.vM.create({
-      data: { ...data },
-    });
-  }
+  // async createNewVM(data: TVMCreate) {
+  //   return await prisma.vM.create({
+  //     data: { ...data },
+  //   });
+  // }
 
   async updateVM(idVM: number, data: TVMUpdate) {
     return await prisma.vM.update({
