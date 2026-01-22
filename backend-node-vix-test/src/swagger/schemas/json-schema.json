@@ -208,6 +208,21 @@
             "null"
           ]
         },
+        "pass": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string",
+          "enum": [
+            "BRAZIL_SOUTH",
+            "BRAZIL_SOUTHEAST",
+            "BRAZIL_NORTHEAST",
+            "US_EAST",
+            "US_WEST",
+            "EUROPE",
+            "ASIA"
+          ]
+        },
         "vCPU": {
           "type": "integer"
         },
