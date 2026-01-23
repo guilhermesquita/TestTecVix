@@ -92,4 +92,67 @@ export class VMModel {
       data: { updatedAt: new Date(), deletedAt: new Date() },
     });
   }
+
+  async startVM(idVM: number) {
+    return await prisma.vM.update({
+      where: { idVM },
+      data: { status: "RUNNING", updatedAt: new Date() },
+    });
+  }
+
+  async stopVM(idVM: number) {
+    return await prisma.vM.update({
+      where: { idVM },
+      data: { status: "STOPPED", updatedAt: new Date() },
+    });
+  }
+
+  async getMetrics(idVM: number) {
+    const vm = await this.getById(idVM);
+
+    if (!vm) {
+      return null;
+    }
+
+    // Em um cenário real, esses dados viriam de um sistema de monitoramento (Prometheus, DataDog, etc.)
+    const numPoints = 10;
+    const intervalMinutes = 5; // intervalo de 5 minutos entre pontos
+
+    const generateMetricsPoints = (totalValue: number) => {
+      const points = [];
+      for (let i = numPoints - 1; i >= 0; i--) {
+        const usagePercent = Math.random() * 100;
+        const used = parseFloat((totalValue * (usagePercent / 100)).toFixed(2));
+        const timestamp = new Date(
+          Date.now() - i * intervalMinutes * 60 * 1000,
+        );
+
+        points.push({
+          timestamp,
+          used,
+          usagePercent: parseFloat(usagePercent.toFixed(2)),
+        });
+      }
+      return points;
+    };
+
+    const metrics = {
+      idVM,
+      vmName: vm.vmName,
+      cpu: {
+        total: vm.vCPU,
+        metrics: generateMetricsPoints(vm.vCPU),
+      },
+      ram: {
+        totalGB: vm.ram,
+        metrics: generateMetricsPoints(vm.ram),
+      },
+      disk: {
+        totalGB: vm.disk,
+        metrics: generateMetricsPoints(vm.disk),
+      },
+    };
+
+    return metrics;
+  }
 }

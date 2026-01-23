@@ -39,4 +39,25 @@ export class VMController {
     const result = await this.vMService.deleteVM(Number(idVM), user);
     return res.status(STATUS_CODE.OK).json(result);
   }
+
+  async startVM(req: CustomRequest<unknown>, res: Response) {
+    const { id } = req.params;
+    const user = req.user as user;
+    const result = await this.vMService.startVM(Number(id), user);
+    return res.status(STATUS_CODE.OK).json(result);
+  }
+
+  async stopVM(req: CustomRequest<unknown>, res: Response) {
+    const { id } = req.params;
+    const user = req.user as user;
+    const result = await this.vMService.stopVM(Number(id), user);
+    return res.status(STATUS_CODE.OK).json(result);
+  }
+
+  async getMetrics(req: CustomRequest<unknown>, res: Response) {
+    const { idVM } = req.params;
+    const user = req.user as user;
+    const result = await this.vMService.getMetrics(Number(idVM), user);
+    return res.status(STATUS_CODE.OK).json(result);
+  }
 }
