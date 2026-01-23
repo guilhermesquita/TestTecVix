@@ -3,15 +3,15 @@ import { HomeRouter } from "./HomeRoute";
 import { MyVMsRouter } from "./MyVMsRouter";
 import { VirtualMachineRouter } from "./VirtualMachineRouter";
 import { MSPRegisterRouter } from "./MSPRegisterRouter";
-// import { RegisterRouter } from "./RegisterRouter";
-// import { LoginRouter } from "./LoginRouter";
+import { RegisterRouter } from "./RegisterRouter";
+import { LoginRouter } from "./LoginRouter";
 import { WhiteLabelRouter } from "./WhiteLabelRouter";
 
 export const mainRoutes = [
   DefaultRouter,
   HomeRouter,
-  // LoginRouter,
-  // RegisterRouter,
+  LoginRouter,
+  RegisterRouter,
   VirtualMachineRouter,
   MyVMsRouter,
   MSPRegisterRouter,

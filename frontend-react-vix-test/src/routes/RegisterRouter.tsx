@@ -4,7 +4,7 @@ import { RegisterPage } from "../pages/Register";
 export const RegisterRouter = {
   path: "/register",
   element: (
-    <LoadingApp>
+    <LoadingApp notLoginPage>
       <RegisterPage />
     </LoadingApp>
   ),

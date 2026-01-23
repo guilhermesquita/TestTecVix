@@ -44,17 +44,22 @@ export class AuthService {
     }
 
     return {
-      result: {
+      user: {
         idUser: user.idUser,
         username: user.username,
+        profileImgUrl: user.profileImgUrl,
         email: user.email,
+        idBrandMaster: user.idBrandMaster,
         role: user.role,
+        isActive: user.isActive,
       },
-      token: genToken({
-        idUser: user.idUser,
-        role: user.role,
-        idBrandMaster: user.idBrandMaster ?? null,
-      }),
+      token: user.isActive
+        ? genToken({
+            idUser: user.idUser,
+            role: user.role,
+            idBrandMaster: user.idBrandMaster ?? null,
+          })
+        : null,
     };
   }
 }

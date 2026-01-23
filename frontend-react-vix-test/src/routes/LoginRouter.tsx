@@ -4,7 +4,7 @@ import { LoginPage } from "../pages/Login";
 export const LoginRouter = {
   path: "/login",
   element: (
-    <LoadingApp>
+    <LoadingApp notLoginPage>
       <LoginPage />
     </LoadingApp>
   ),
