@@ -23,16 +23,16 @@ export class VMService {
     });
   }
 
-  async createNewVM(data: unknown, user: user) {
-    const validateData = vMCreatedSchema.parse(data);
+  // async createNewVM(data: unknown, user: user) {
+  //   const validateData = vMCreatedSchema.parse(data);
 
-    const createdVM = await this.vMModel.createNewVM({
-      ...validateData,
-      status: "RUNNING",
-    });
+  //   const createdVM = await this.vMModel.createNewVM({
+  //     ...validateData,
+  //     status: "RUNNING",
+  //   });
 
-    return createdVM;
-  }
+  //   return createdVM;
+  // }
 
   async updateVM(idVM: number, data: unknown, user: user) {
     const validateDataSchema = vMUpdatedSchema.parse(data);
