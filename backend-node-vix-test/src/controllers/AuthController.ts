@@ -8,8 +8,12 @@ export class AuthController {
   constructor() {}
   private authService = new AuthService();
   async register(req: CustomRequest<unknown>, res: Response): Promise<void> {
-    const result = await this.authService.register(req.body);
-    res.status(STATUS_CODE.CREATED).json(result);
+    try {
+      const result = await this.authService.register(req.body);
+      res.status(STATUS_CODE.CREATED).json(result);
+    } catch (error) {
+      console.error("Error in AuthController.register:", error);
+    }
   }
 
   async login(req: CustomRequest<unknown>, res: Response): Promise<void> {

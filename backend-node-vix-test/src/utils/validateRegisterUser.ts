@@ -21,13 +21,15 @@ export const validateRegisterUser = async (validData: Tregister) => {
     throw new AppError(ERROR_MESSAGE.USER_ALREADY_EXISTS, STATUS_CODE.CONFLICT);
   }
 
-  const brandMasterExists = await userModel.checkBrandMasterExists(
-    validData.idBrandMaster!,
-  );
-  if (!brandMasterExists) {
-    throw new AppError(
-      ERROR_MESSAGE.BRAND_MASTER_NOT_FOUND,
-      STATUS_CODE.NOT_FOUND,
+  if (validData.idBrandMaster) {
+    const brandMasterExists = await userModel.checkBrandMasterExists(
+      validData.idBrandMaster!,
     );
+    if (!brandMasterExists) {
+      throw new AppError(
+        ERROR_MESSAGE.BRAND_MASTER_NOT_FOUND,
+        STATUS_CODE.NOT_FOUND,
+      );
+    }
   }
 };

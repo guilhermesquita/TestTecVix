@@ -36,17 +36,28 @@ export class AuthModel {
     return await prisma.user.findFirst({
       where: {
         email,
-        isActive: true,
       },
       select: {
         idUser: true,
         username: true,
+        profileImgUrl: true,
         email: true,
         role: true,
         isActive: true,
         lastLoginDate: true,
         password: true,
         idBrandMaster: true,
+      },
+    });
+  }
+
+  async updateLastLoginDate(idUser: string) {
+    return await prisma.user.update({
+      where: {
+        idUser,
+      },
+      data: {
+        lastLoginDate: new Date(),
       },
     });
   }
