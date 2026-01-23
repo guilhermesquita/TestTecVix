@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Stack } from "@mui/material";
 import { Screen } from "../../components/Screen";
 import { Header } from "./components/Header";
@@ -15,15 +15,36 @@ import { Sidebar } from "../../components/Sidebar";
 import { useZGlobalVar } from "../../stores/useZGlobalVar";
 import { WelcomeCards } from "./components/WelcomeCards";
 import { useListVms } from "../../hooks/useListVms";
+import { useListMetricsVm } from "../../hooks/useListMetricsVm";
+import { toLocalTime } from "../../utils/toLocalTime";
 
 export const HomePage = () => {
   const { theme, mode } = useZTheme();
   useCloseMenuTimed();
-  const { totalCountVMs } = useZGlobalVar();
+  const { totalCountVMs, currentIdVM } = useZGlobalVar();
   const [selectedChart, setSelectedChart] = useState<
     "main" | "top" | "bottom" | null
   >(null);
   const { vmList, isLoading } = useListVms();
+  const { fetchMetrics, metrics, isLoading: isLoadingMetrics } = useListMetricsVm();
+
+  useEffect(() => {
+    fetchMetrics(currentIdVM);
+  }, [currentIdVM]);
+
+  const cpuData = useMemo(() => {
+    return metrics?.cpu?.metrics.map((item) => ({
+      time: toLocalTime(item.timestamp) as string,
+      value: item.usagePercent
+    })) || [];
+  }, [metrics]);
+
+  const ramData = useMemo(() => {
+    return metrics?.ram?.metrics.map((item) => ({
+      time: toLocalTime(item.timestamp) as string,
+      value: item.usagePercent
+    })) || [];
+  }, [metrics]);
 
   return (
     <Screen
@@ -116,7 +137,7 @@ export const HomePage = () => {
                         <ExpandButton
                           onClick={() => setSelectedChart("main")}
                         />
-                        <MainGraphic />
+                        <MainGraphic data={cpuData} isLoading={isLoadingMetrics} />
                       </Stack>
                       {/* Seconds Maps */}
                       <Stack
@@ -148,7 +169,7 @@ export const HomePage = () => {
                             }}
                             onClick={() => setSelectedChart("bottom")}
                           />
-                          <BottomGraphic />
+                          <BottomGraphic data={ramData} isLoading={isLoadingMetrics} />
                         </Stack>
                       </Stack>
                     </Stack>
@@ -164,9 +185,9 @@ export const HomePage = () => {
           open={Boolean(selectedChart)}
           onClose={() => setSelectedChart(null)}
         >
-          {selectedChart === "main" && <MainGraphic />}
+          {selectedChart === "main" && <MainGraphic data={cpuData} isLoading={isLoadingMetrics} />}
           {selectedChart === "top" && <TopGraphic />}
-          {selectedChart === "bottom" && <BottomGraphic />}
+          {selectedChart === "bottom" && <BottomGraphic data={ramData} isLoading={isLoadingMetrics} />}
         </ModalChart>
       )}
     </Screen>

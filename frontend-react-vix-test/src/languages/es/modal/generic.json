@@ -27,5 +27,6 @@
   "placeholderObservations": "Observaciones sobre este MSP, origen, responsable comercial, seguimiento (en adelante, arriba), etc.",
   "saveNotes": "Guardar notas",
   "editNotes": "Editar notas",
-  "createNotes": "Crear notas"
+  "createNotes": "Crear notas",
+  "noPermissionAction": "El usuario no tiene permiso para ejecutar esta acción"
 }

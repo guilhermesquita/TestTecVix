@@ -324,6 +324,32 @@ export const useVmResource = () => {
     return Boolean(response.data);
   };
 
+  const startVm = async (idVM: number) => {
+    const auth = await getAuth();
+    const response = await api.put({
+      url: `/vm/${idVM}/start`,
+      auth,
+    });
+    if (response.error) {
+      toast.error(response.message);
+    }
+    return response;
+  };
+
+  const stopVm = async (idVM: number) => {
+    const auth = await getAuth();
+    const response = await api.put({
+      url: `/vm/${idVM}/stop`,
+      auth,
+    });
+    if (response.error) {
+      if (response.message === "Forbidden") {
+        toast.error(t("generic.noPermissionAction"));
+      }
+    }
+    return response;
+  };
+
   return {
     createVm,
     updateNameVm,
@@ -344,5 +370,7 @@ export const useVmResource = () => {
     getOSDeletedLabel,
     monitoringVMStatus,
     updateVMStatus,
+    startVm,
+    stopVm,
   };
 };
