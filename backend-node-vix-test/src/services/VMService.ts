@@ -54,4 +54,28 @@ export class VMService {
     const deletedVm = await this.vMModel.deleteVM(idVM);
     return deletedVm;
   }
+
+  async startVM(idVM: number) {
+    const vm = await this.getById(idVM);
+    if (!vm) {
+      throw new AppError(ERROR_MESSAGE.NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+    if (vm.status === "RUNNING") {
+      throw new AppError("VM already running", STATUS_CODE.BAD_REQUEST);
+    }
+    const startedVM = await this.vMModel.startVM(idVM);
+    return startedVM;
+  }
+
+  async stopVM(idVM: number) {
+    const vm = await this.getById(idVM);
+    if (!vm) {
+      throw new AppError(ERROR_MESSAGE.NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+    if (vm.status === "STOPPED") {
+      throw new AppError("VM already stopped", STATUS_CODE.BAD_REQUEST);
+    }
+    const stoppedVM = await this.vMModel.stopVM(idVM);
+    return stoppedVM;
+  }
 }
