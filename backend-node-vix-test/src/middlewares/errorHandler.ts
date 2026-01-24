@@ -8,8 +8,8 @@ export const errorHandler = (
     | AppError
     | ZodError
     | {
-        status?: number;
-      },
+      status?: number;
+    },
   _req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -28,5 +28,6 @@ export const errorHandler = (
   if (err instanceof PrismaClientKnownRequestError) {
     return res.status(400).json(err);
   }
+  console.log(err);
   return res.status(err?.status || 500).json(err);
 };

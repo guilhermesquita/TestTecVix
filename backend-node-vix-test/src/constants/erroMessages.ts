@@ -18,4 +18,5 @@ export const ERROR_MESSAGE = {
   INVALID_DATA: "Invalid data",
   USERNAME_ALREADY_EXISTS: "Username already exists",
   EMAIL_ALREADY_EXISTS: "Email already exists",
+  VM_NAME_ALREADY_EXISTS: "VM name already exists",
 };

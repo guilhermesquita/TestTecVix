@@ -1,1 +1,26 @@
-{}
+[
+  {
+    "idUser": "6947dace-92f3-412e-a4fd-4fab6004574a",
+    "username": "Admin",
+    "email": "admin@vituax.com",
+    "password": "$2a$12$05Eg9aYlQpjlHbf0IzyM.eJp1gzpV6QlVbNG2VrlAbEQK.A1Zcb6a",
+    "role": "admin",
+    "isActive": true
+  },
+  {
+    "idUser": "ff8fc16c-58d7-478f-bd2b-7ce4422380fc",
+    "username": "Manager",
+    "email": "manager@vituax.com",
+    "password": "$2a$12$Qtt9OV7zAfSxi5Gw3GfNPeJtpf.je7D7LFULctuQRbL7as66tM4GG",
+    "role": "manager",
+    "isActive": true
+  },
+  {
+    "idUser": "f97e9e97-7a69-412b-95e6-2fa367b58ca3",
+    "username": "Member",
+    "email": "member@vituax.com",
+    "password": "$2a$12$rvXbYgE5B0mocJknLVd3TO2ZpqsMNUgr40NZNJcCHnf81Snl0lqYK",
+    "role": "member",
+    "isActive": true
+  }
+]

@@ -6,9 +6,10 @@ import { ERROR_MESSAGE } from "../constants/erroMessages";
 import { STATUS_CODE } from "../constants/statusCode";
 import { TVMUpdate, vMUpdatedSchema } from "../types/validations/VM/updateVM";
 import { vmListAllSchema } from "../types/validations/VM/vmListAll";
+import { hashPassword } from "../utils/bcrypt";
 
 export class VMService {
-  constructor() {}
+  constructor() { }
 
   private vMModel = new VMModel();
 
@@ -24,16 +25,39 @@ export class VMService {
     });
   }
 
-  // async createNewVM(data: unknown, user: user) {
-  //   const validateData = vMCreatedSchema.parse(data);
+  async createNewVM(data: unknown, user: user) {
+    const validateData = vMCreatedSchema.parse(data);
 
-  //   const createdVM = await this.vMModel.createNewVM({
-  //     ...validateData,
-  //     status: "RUNNING",
-  //   });
+    const isAllow = await this.verifyPermission(user, Number(validateData.idBrandMaster));
+    if (!isAllow) {
+      throw new AppError(ERROR_MESSAGE.FORBIDDEN, STATUS_CODE.FORBIDDEN);
+    }
 
-  //   return createdVM;
-  // }
+    const vmNameExists = await this.vMModel.checkVMName(validateData.vmName!, Number(validateData.idBrandMaster));
+    if (vmNameExists) {
+      throw new AppError(ERROR_MESSAGE.VM_NAME_ALREADY_EXISTS, STATUS_CODE.BAD_REQUEST);
+    }
+
+    const idBrandMasterExists = validateData.idBrandMaster ? await this.vMModel.checkIdBrandMaster(Number(validateData.idBrandMaster)) : true;
+    if (!idBrandMasterExists) {
+      throw new AppError(ERROR_MESSAGE.BRAND_MASTER_NOT_FOUND, STATUS_CODE.BAD_REQUEST);
+    }
+
+    const os = this.allOs().find((os) => os.id === validateData.os);
+    if (!os) {
+      throw new AppError(ERROR_MESSAGE.NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+
+    const hashedPassword = await hashPassword(validateData.pass);
+
+    const createdVM = await this.vMModel.createNewVM({
+      ...validateData,
+      status: "RUNNING",
+      pass: hashedPassword,
+    }, user);
+
+    return createdVM;
+  }
 
   async updateVM(idVM: number, data: unknown, user: user) {
     const validateDataSchema = vMUpdatedSchema.parse(data);
@@ -114,5 +138,82 @@ export class VMService {
     } else {
       return true;
     }
+  }
+
+  allOs() {
+    return [
+      {
+        id: "ubuntu-24-04",
+        name: "Ubuntu",
+        category: "linux",
+        version: "24.04 LTS",
+        description: "Distribuição Linux moderna, estável e amplamente utilizada em servidores e aplicações cloud.",
+        recommend: true
+      },
+      {
+        id: "ubuntu-22-04",
+        name: "Ubuntu",
+        category: "linux",
+        version: "22.04 LTS",
+        description: "Distribuição Linux LTS altamente estável, com amplo suporte da comunidade e ideal para produção.",
+        recommend: true
+      },
+      {
+        id: "debian-12",
+        name: "Debian",
+        category: "linux",
+        version: "12",
+        description: "Distribuição Linux focada em estabilidade e segurança, muito usada em servidores.",
+        recommend: false
+      },
+      {
+        id: "debian-13",
+        name: "Debian",
+        category: "linux",
+        version: "13",
+        description: "Versão mais recente do Debian, trazendo pacotes mais novos mantendo a confiabilidade.",
+        recommend: false
+      },
+      {
+        id: "archlinux",
+        name: "Arch Linux",
+        category: "linux",
+        version: "Rolling Release",
+        description: "Distribuição Linux avançada e altamente customizável, indicada para usuários experientes.",
+        recommend: false
+      },
+      {
+        id: "centos-10",
+        name: "CentOS",
+        category: "linux",
+        version: "10",
+        description: "Distribuição Linux baseada no ecossistema Red Hat, voltada para ambientes corporativos.",
+        recommend: false
+      },
+      {
+        id: "rockylinux-9",
+        name: "Rocky Linux",
+        category: "linux",
+        version: "9",
+        description: "Alternativa comunitária ao CentOS, focada em compatibilidade com RHEL.",
+        recommend: false
+      },
+      {
+        id: "windows-2019",
+        name: "Windows Server",
+        category: "windows",
+        version: "2019 Standard",
+        description: "Sistema operacional da Microsoft voltado para servidores e aplicações corporativas.",
+        recommend: false
+      },
+      {
+        id: "windows-2022",
+        name: "Windows Server",
+        category: "windows",
+        version: "2022 Standard",
+        description: "Versão mais recente do Windows Server, com melhorias em segurança e performance.",
+        recommend: false
+      }
+    ];
   }
 }

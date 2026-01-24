@@ -5,7 +5,7 @@ import { STATUS_CODE } from "../constants/statusCode";
 import { user } from "@prisma/client";
 
 export class VMController {
-  constructor() {}
+  constructor() { }
   private vMService = new VMService();
 
   async getById(req: CustomRequest<unknown>, res: Response) {
@@ -20,11 +20,11 @@ export class VMController {
     return res.status(STATUS_CODE.OK).json(result);
   }
 
-  // async createVM(req: CustomRequest<unknown>, res: Response) {
-  //   const user = req.user as user;
-  //   const result = await this.vMService.createNewVM(req.body, user);
-  //   return res.status(STATUS_CODE.CREATED).json(result);
-  // }
+  async createVM(req: CustomRequest<unknown>, res: Response) {
+    const user = req.user as user;
+    const result = await this.vMService.createNewVM(req.body, user);
+    return res.status(STATUS_CODE.CREATED).json(result);
+  }
 
   async updateVM(req: CustomRequest<unknown>, res: Response) {
     const { idVM } = req.params;
@@ -59,5 +59,11 @@ export class VMController {
     const user = req.user as user;
     const result = await this.vMService.getMetrics(Number(idVM), user);
     return res.status(STATUS_CODE.OK).json(result);
+  }
+
+  async getOperatingSystems(_req: CustomRequest<unknown>, res: Response) {
+    const operatingSystems = this.vMService.allOs();
+
+    return res.status(STATUS_CODE.OK).json(operatingSystems);
   }
 }

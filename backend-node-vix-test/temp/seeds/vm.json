@@ -10,6 +10,7 @@
     "hasBackup": false,
     "idBrandMaster": 1,
     "status": "RUNNING",
+    "idUser": "6947dace-92f3-412e-a4fd-4fab6004574a",
     "os": "ubuntu2404",
     "createdAt": "2025-03-20T18:50:58.000Z",
     "updatedAt": "2025-03-21T13:43:50.000Z"
@@ -26,6 +27,7 @@
     "idBrandMaster": 1,
     "status": "STOPPED",
     "os": "ubuntu2404",
+    "idUser": "6947dace-92f3-412e-a4fd-4fab6004574a",
     "createdAt": "2025-03-21T14:02:07.000Z",
     "updatedAt": "2025-03-21T15:10:17.000Z",
     "deletedAt": "2025-03-21T15:10:17.000Z"
@@ -40,6 +42,7 @@
     "disk": 250,
     "hasBackup": false,
     "status": "RUNNING",
+    "idUser": "6947dace-92f3-412e-a4fd-4fab6004574a",
     "os": "ubuntu2404",
     "createdAt": "2025-03-21T14:44:54.000Z",
     "updatedAt": "2025-03-21T14:45:05.000Z"
@@ -55,6 +58,7 @@
     "hasBackup": true,
     "idBrandMaster": 2,
     "status": "STOPPED",
+    "idUser": "6947dace-92f3-412e-a4fd-4fab6004574a",
     "os": "archlinux",
     "createdAt": "2025-03-24T15:02:45.000Z",
     "updatedAt": "2025-04-22T17:14:58.000Z",
@@ -71,6 +75,7 @@
     "hasBackup": true,
     "idBrandMaster": 2,
     "status": "STOPPED",
+    "idUser": "6947dace-92f3-412e-a4fd-4fab6004574a",
     "os": "debian12",
     "createdAt": "2025-03-24T15:23:54.000Z",
     "updatedAt": "2025-04-22T17:14:40.000Z"
@@ -85,6 +90,7 @@
     "disk": 26,
     "hasBackup": false,
     "status": "STOPPED",
+    "idUser": "6947dace-92f3-412e-a4fd-4fab6004574a",
     "os": "debian13",
     "createdAt": "2025-03-26T16:41:45.000Z",
     "updatedAt": "2025-03-26T16:43:48.000Z"
@@ -100,6 +106,7 @@
     "hasBackup": true,
     "idBrandMaster": 1,
     "status": "RUNNING",
+    "idUser": "6947dace-92f3-412e-a4fd-4fab6004574a",
     "os": "centos10",
     "createdAt": "2025-03-27T13:07:52.000Z",
     "updatedAt": "2025-03-27T13:08:05.000Z"
@@ -114,6 +121,7 @@
     "disk": 50,
     "hasBackup": true,
     "status": "RUNNING",
+    "idUser": "6947dace-92f3-412e-a4fd-4fab6004574a",
     "os": "win2019std",
     "createdAt": "2025-03-26T16:41:45.000Z",
     "updatedAt": "2025-03-27T16:41:50.000Z"

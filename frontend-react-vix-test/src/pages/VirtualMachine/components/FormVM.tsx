@@ -20,6 +20,7 @@ import { ENetworkType } from "../../../types/VMTypes";
 import { AbsoluteBackDrop } from "../../../components/AbsoluteBackDrop";
 import { BTNISOsSection } from "./BTNISOsSection";
 import { useZVM } from "../../../stores/useZVM";
+import { useOperatingSystems } from "../../../hooks/useOperatingSystems";
 
 export const FormVM = () => {
   const { t } = useTranslation(); // createVm
@@ -64,6 +65,8 @@ export const FormVM = () => {
     resetAll,
   } = useZVMSugestion();
 
+  const { operatingSystems } = useOperatingSystems();
+
   const vmStorageType = {
     value: "ssd",
     label: "SSD",
@@ -97,17 +100,19 @@ export const FormVM = () => {
     const isValidPass = validPassword(vmPassword);
     if (!isValidPass) return;
 
-    await createVm({
-      ...vm,
-      networkType: vmNetwork?.value,
+    const payload = {
+      // networkType: vmNetwork?.value,
       vmName: vmName,
       vCPU: vmvCpu,
       ram: vmMemory,
       disk: vmDisk,
       hasBackup: hasBackup,
       os: String(vmSO?.value) || "",
+      location: vmLocalization?.value,
       pass: vmPassword,
-    });
+    }
+
+    await createVm(payload);
   };
 
   const disabledBtn =
@@ -120,11 +125,13 @@ export const FormVM = () => {
     !vmPassword ||
     !vmNetwork;
 
+  const sugestionOSLabel = operatingSystems.find(os => os.id === sugestionOS);
+
   useEffect(() => {
     if (sugestionOS)
       setVmSO({
-        label: sugestionOS,
-        value: sugestionOS,
+        label: sugestionOSLabel?.name + " " + sugestionOSLabel?.version,
+        value: sugestionOSLabel?.id,
       });
     if (sugestionVCPU) setVmvCpu(sugestionVCPU);
     if (sugestionRAM) setVmMemory(sugestionRAM);
@@ -174,7 +181,7 @@ export const FormVM = () => {
         >
           <LabelInputVM
             disabled
-            onChange={() => {}}
+            onChange={() => { }}
             value={"root"}
             label={t("createVm.userVM")}
             placeholder={t("createVm.name")}
@@ -288,7 +295,7 @@ export const FormVM = () => {
               label={t("createVm.storageType")}
               data={storageOptions}
               value={vmStorageType}
-              onChange={() => {}}
+              onChange={() => { }}
               sxContainer={{
                 maxWidth: "180px",
               }}
