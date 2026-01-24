@@ -47,7 +47,8 @@ export const MyVMsPage = () => {
       page: page || currentPage - 1 || 0,
       orderBy: orderBy ? `${orderBy}:${order}` : undefined,
       limit,
-      idBrandMaster: idBrand,
+      idBrandMaster: selectedMSP?.idBrandMaster || "null",
+      onlyMine: onlyMyVMs,
       status,
     });
     setVMList(vmList);

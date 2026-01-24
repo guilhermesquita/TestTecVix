@@ -8,14 +8,14 @@ import { ActionButton } from "../../../components/Buttons/ActionButton";
 import { TextRob14FontXsB } from "../../../components/TextXsB";
 
 interface IProps {
-  open: boolean;
-  onClose: () => void;
+  idVM?: number;
+  vmName?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
 export const ModalDeleteVM = ({
-  open,
-  onClose,
+  idVM,
+  vmName,
   onConfirm,
   onCancel,
 }: IProps) => {
@@ -25,8 +25,8 @@ export const ModalDeleteVM = ({
 
   return (
     <Modal
-      open={open}
-      onClose={onClose}
+      open={Boolean(idVM)}
+      onClose={onCancel}
       sx={{
         display: "flex",
         alignItems: "center",
@@ -62,7 +62,7 @@ export const ModalDeleteVM = ({
               cursor: "pointer",
             }}
           >
-            {`${t("createVm.deleteVMConfirm")}`}
+            {`${t("createVm.deleteVMConfirm")} ${vmName}?`}
           </TextRob16FontL>
         </Stack>
         {/* Buttons */}

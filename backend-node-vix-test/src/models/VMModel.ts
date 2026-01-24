@@ -13,14 +13,12 @@ export class VMModel {
   }
 
   async totalCount({ query, idBrandMaster }: IListAllVM) {
-    const { status, idBrandMaster: idBrandMasterParams } = query;
-    const isRetriveAllCompanies = idBrandMaster === idBrandMasterParams;
+    const { status, onlyMine } = query;
 
     return prisma.vM.count({
       where: {
         deletedAt: null,
-        idBrandMaster:
-          !idBrandMaster && isRetriveAllCompanies ? undefined : idBrandMaster,
+        idBrandMaster: onlyMine === "true" ? idBrandMaster : undefined,
         status,
         vmName: {
           contains: query.search,
@@ -32,19 +30,19 @@ export class VMModel {
   async listAll({ query, idBrandMaster }: IListAllVM) {
     const limit = query.limit || 0;
     const skip = query.page ? query.page * limit : query.offset || 0;
-    const { status, idBrandMaster: idBrandMasterParams } = query;
+    const { status, onlyMine } = query;
     const orderBy =
       query.orderBy?.map(({ field, direction }) => ({
         [field]: direction,
       })) || [];
 
-    const isRetriveAllCompanies = idBrandMaster === idBrandMasterParams;
+    const brandMasterFilter = onlyMine === "true" ? idBrandMaster :
+      query.idBrandMaster ? Number(query.idBrandMaster) : undefined;
 
     const vms = await prisma.vM.findMany({
       where: {
         deletedAt: null,
-        idBrandMaster:
-          !idBrandMaster && isRetriveAllCompanies ? undefined : idBrandMaster,
+        idBrandMaster: brandMasterFilter,
         status,
         vmName: {
           contains: query.search,
@@ -67,6 +65,7 @@ export class VMModel {
       },
     });
 
+
     const totalCount = await this.totalCount({
       query,
       idBrandMaster,
@@ -88,18 +87,12 @@ export class VMModel {
 
   async createNewVM(data: TVMCreate, user: user) {
     return await prisma.vM.create({
-      data: { ...data, idUser: user.idUser },
+      data: { ...data },
       select: {
         idVM: true,
         vmName: true,
         status: true,
         idBrandMaster: true,
-        user: {
-          select: {
-            username: true,
-            email: true,
-          },
-        },
         brandMaster: {
           select: {
             brandName: true,
@@ -118,9 +111,16 @@ export class VMModel {
   }
 
   async deleteVM(idVM: number) {
+    const vm = await this.getById(idVM);
+    if (!vm) throw new Error("VM not found");
+
     return await prisma.vM.update({
       where: { idVM },
-      data: { updatedAt: new Date(), deletedAt: new Date() },
+      data: {
+        updatedAt: new Date(),
+        deletedAt: new Date(),
+        vmName: `${vm.vmName} Deleted`,
+      },
     });
   }
 

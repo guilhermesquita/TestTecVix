@@ -17,16 +17,17 @@ export const useMyVMList = () => {
       search?: string;
       orderBy?: string; // field_name:asc or field_name:desc
       idBrandMaster?: number | "null";
+      onlyMine?: boolean;
     } = {},
   ) => {
     const auth = await getAuth();
     setIsLoading(true);
+    console.log(params);
     const response = await api.get<IListAll<IVMCreatedResponse>>({
       url: "/vm",
       auth,
       params: {
         ...params,
-        //status: "PAUSED", // "RUNNING", "STOPPED", "PAUSED", "null", undefined
       },
     });
 

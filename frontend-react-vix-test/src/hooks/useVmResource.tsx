@@ -369,7 +369,7 @@ export const useVmResource = () => {
 
   const startVm = async (idVM: number) => {
     const auth = await getAuth();
-    const response = await api.put({
+    const response = await api.put<IVMCreatedResponse>({
       url: `/vm/${idVM}/start`,
       auth,
     });
@@ -381,7 +381,7 @@ export const useVmResource = () => {
 
   const stopVm = async (idVM: number) => {
     const auth = await getAuth();
-    const response = await api.put({
+    const response = await api.put<IVMCreatedResponse>({
       url: `/vm/${idVM}/stop`,
       auth,
     });

@@ -65,13 +65,10 @@ model vM {
   updatedAt     DateTime?     @default(now()) @db.DateTime(0)
   deletedAt     DateTime?     @db.DateTime(0)
   os            String?
-  idUser        String
 
   brandMaster   brandMaster?  @relation(fields: [idBrandMaster], references: [idBrandMaster])
-  user          user          @relation(fields: [idUser], references: [idUser])
 
   @@index([idBrandMaster], map: "VM_idBrandMaster_fkey")
-  @@index([idUser], map: "VM_idUser_fkey")
 }
 
 model user {
@@ -89,7 +86,6 @@ model user {
   deletedAt     DateTime?     @db.DateTime(0)
 
   brandMaster   brandMaster?  @relation(fields: [idBrandMaster], references: [idBrandMaster])
-  vMs           vM[]
 
   @@index([idBrandMaster], map: "user_idBrandMaster_fkey")
 }
