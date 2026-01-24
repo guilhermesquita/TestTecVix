@@ -11,11 +11,14 @@ import { ScreenFullPage } from "../../components/ScreenFullPage";
 import { useEffect } from "react";
 import { useZVM } from "../../stores/useZVM";
 import { CardMarketPlace } from "./components/CardMarketPlace";
+import { ModalSelectOS } from "./components/ModalSelectOS";
+import { useOperatingSystems } from "../../hooks/useOperatingSystems";
 
 export const VirtualMachinePage = () => {
   const { theme, mode } = useZTheme();
   const { t } = useTranslation();
   const { newRandomPassword, resetAll } = useZVM();
+  const { operatingSystems, isLoading: isLoadingOS } = useOperatingSystems();
 
   useEffect(() => {
     return () => {
@@ -139,6 +142,9 @@ export const VirtualMachinePage = () => {
             <CardMarketPlace />
           </Stack>
         </Stack>
+
+        {/* Modal for OS Selection */}
+        <ModalSelectOS operatingSystems={operatingSystems} isLoading={isLoadingOS} />
       </>
     </ScreenFullPage>
   );

@@ -16,8 +16,13 @@ import {
 import { EOS } from "../stores/useZVMSugestion";
 
 enum ETaskLocation {
-  bre_barueri = "bre_barueri",
-  usa_miami = "usa_miami",
+  BRAZIL_SOUTH = "BRAZIL_SOUTH",
+  BRAZIL_SOUTHEAST = "BRAZIL_SOUTHEAST",
+  BRAZIL_NORTHEAST = "BRAZIL_NORTHEAST",
+  US_EAST = "US_EAST",
+  US_WEST = "US_WEST",
+  EUROPE = "EUROPE",
+  ASIA = "ASIA",
 }
 
 export const useVmResource = () => {
@@ -75,12 +80,32 @@ export const useVmResource = () => {
 
   const localizationOptions: { value: ETaskLocation; label: string }[] = [
     {
-      value: ETaskLocation.usa_miami,
+      value: ETaskLocation.US_EAST,
       label: t("createVm.usaMiami"),
     },
     {
-      value: ETaskLocation.bre_barueri,
+      value: ETaskLocation.US_WEST,
+      label: t("createVm.usaCalifornia"),
+    },
+    {
+      value: ETaskLocation.BRAZIL_SOUTHEAST,
       label: t("createVm.brSaoPaulo"),
+    },
+    {
+      value: ETaskLocation.BRAZIL_SOUTH,
+      label: t("createVm.brCuritiba"),
+    },
+    {
+      value: ETaskLocation.BRAZIL_NORTHEAST,
+      label: t("createVm.brRecife"),
+    },
+    {
+      value: ETaskLocation.EUROPE,
+      label: t("createVm.euFrankfurt"),
+    },
+    {
+      value: ETaskLocation.ASIA,
+      label: t("createVm.asiaSingapore"),
     },
   ];
 
@@ -131,12 +156,18 @@ export const useVmResource = () => {
       url: "/vm",
       data: {
         ...vm,
+        idBrandMaster: idBrand,
       },
       auth,
     });
 
     if (response.error) {
-      toast.error(response.message);
+      if (response.message === "Forbidden") {
+        toast.error(t("generic.noPermissionAction"));
+      }
+      if (response.message === "VM name already exists") {
+        toast.error(t("createVm.vmNameAlreadyExists"));
+      }
       setIsLoadingCreateVM(false);
       return;
     }
@@ -159,7 +190,9 @@ export const useVmResource = () => {
       auth,
     });
     if (response.error) {
-      toast.error(response.message);
+      if (response.message === "Forbidden") {
+        toast.error(t("generic.noPermissionAction"));
+      }
       return;
     }
 
@@ -181,7 +214,9 @@ export const useVmResource = () => {
       auth,
     });
     if (response.error) {
-      toast.error(response.message);
+      if (response.message === "Forbidden") {
+        toast.error(t("generic.noPermissionAction"));
+      }
       return null;
     }
 
@@ -203,7 +238,9 @@ export const useVmResource = () => {
     });
 
     if (response.error) {
-      toast.error(response.message);
+      if (response.message === "Forbidden") {
+        toast.error(t("generic.noPermissionAction"));
+      }
       return;
     }
 
@@ -221,7 +258,9 @@ export const useVmResource = () => {
     });
     setIsLoading(false);
     if (response.error) {
-      toast.error(response.message);
+      if (response.message === "Forbidden") {
+        toast.error(t("generic.noPermissionAction"));
+      }
       return;
     }
 
@@ -244,7 +283,9 @@ export const useVmResource = () => {
 
     setIsLoadingUpdateVM(false);
     if (response.error) {
-      toast.error(response.message);
+      if (response.message === "Forbidden") {
+        toast.error(t("generic.noPermissionAction"));
+      }
       return;
     }
 
@@ -262,7 +303,9 @@ export const useVmResource = () => {
       auth,
     });
     if (response.error) {
-      toast.error(response.message);
+      if (response.message === "Forbidden") {
+        toast.error(t("generic.noPermissionAction"));
+      }
       return setIsLoadingDeleteVM(false);
     }
 

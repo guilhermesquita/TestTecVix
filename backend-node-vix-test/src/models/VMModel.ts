@@ -3,6 +3,7 @@ import { TVMCreate } from "../types/validations/VM/createVM";
 import { TVMUpdate } from "../types/validations/VM/updateVM";
 import { IListAllVM } from "../types/IListAll";
 import moment from "moment";
+import { user } from "@prisma/client";
 
 export class VMModel {
   async getById(idVM: number) {
@@ -54,8 +55,8 @@ export class VMModel {
       orderBy: orderBy.length
         ? orderBy
         : {
-            updatedAt: "desc",
-          },
+          updatedAt: "desc",
+        },
       include: {
         brandMaster: {
           select: {
@@ -73,11 +74,41 @@ export class VMModel {
     return { totalCount, result: vms };
   }
 
-  // async createNewVM(data: TVMCreate) {
-  //   return await prisma.vM.create({
-  //     data: { ...data },
-  //   });
-  // }
+  async checkVMName(vmName: string, idBrandMaster: number) {
+    return await prisma.vM.findFirst({
+      where: { vmName, deletedAt: null, idBrandMaster },
+    });
+  }
+
+  async checkIdBrandMaster(idBrandMaster: number) {
+    return await prisma.brandMaster.findFirst({
+      where: { idBrandMaster, deletedAt: null },
+    });
+  }
+
+  async createNewVM(data: TVMCreate, user: user) {
+    return await prisma.vM.create({
+      data: { ...data, idUser: user.idUser },
+      select: {
+        idVM: true,
+        vmName: true,
+        status: true,
+        idBrandMaster: true,
+        user: {
+          select: {
+            username: true,
+            email: true,
+          },
+        },
+        brandMaster: {
+          select: {
+            brandName: true,
+            brandLogo: true,
+          },
+        },
+      }
+    });
+  }
 
   async updateVM(idVM: number, data: TVMUpdate) {
     return await prisma.vM.update({
@@ -116,7 +147,7 @@ export class VMModel {
 
     // Em um cenário real, esses dados viriam de um sistema de monitoramento (Prometheus, DataDog, etc.)
     const numPoints = 10;
-    const intervalMinutes = 5; // intervalo de 5 minutos entre pontos
+    const intervalMinutes = 5;
 
     const generateMetricsPoints = (totalValue: number) => {
       const points = [];

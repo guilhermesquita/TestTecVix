@@ -28,17 +28,20 @@ vMRoutes.get(`${BASE_PATH}/:idVM/metrics`, authUser, async (req, res) => {
   await vMController.getMetrics(req, res);
 });
 
+vMRoutes.get(`/api/v1/operating-systems`, authUser, async (req, res) => {
+  await vMController.getOperatingSystems(req, res);
+});
+
 // ========= POSTs =========
-// vMRoutes.post(
-//   BASE_PATH, // authUser,
-//   // isManagerOrIsAdmin,
-//   async (req, res) => {
-//     await vMController.createVM(req, res);
-//   },
-// );
+vMRoutes.post(
+  BASE_PATH, // authUser,
+  isManagerOrIsAdmin,
+  async (req, res) => {
+    await vMController.createVM(req, res);
+  },
+);
 
 // ======== PUTs =========
-
 vMRoutes.put(`${BASE_PATH}/:idVM`, isManagerOrIsAdmin, async (req, res) => {
   await vMController.updateVM(req, res);
 });

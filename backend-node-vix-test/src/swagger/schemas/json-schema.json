@@ -286,6 +286,9 @@
               "type": "null"
             }
           ]
+        },
+        "user": {
+          "$ref": "#/definitions/user"
         }
       }
     },
@@ -363,6 +366,12 @@
               "type": "null"
             }
           ]
+        },
+        "vMs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/vM"
+          }
         }
       }
     }

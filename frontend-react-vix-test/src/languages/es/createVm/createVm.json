@@ -76,7 +76,12 @@
   "diskCalc": "Disco:",
   "backupCalc": "Backup:",
   "brSaoPaulo": "Brasil - São Paulo",
+  "brCuritiba": "Brasil - Curitiba",
+  "brRecife": "Brasil - Recife",
   "usaMiami": "Estados Unidos - Miami",
+  "usaCalifornia": "Estados Unidos - California",
+  "euFrankfurt": "Europa - Fráncfort",
+  "asiaSingapore": "Asia - Singapur",
   "spiceError": "Error conectando al servidor",
   "AgreeCostsTitle": "Antes de continuar, confirme que está al tanto:",
   "termOne": "La VM se facturará bajo el modelo pay-as-you-go, con cálculo diario de uso (cada 24h).",
@@ -93,5 +98,6 @@
   "dailyTotalDesc": "(valor no incluye el sistema operativo)",
   "monthlyTotalDescOne": "(valor mensual estimado, basado en un mes de 30 días, incluyendo sistema operativo)",
   "monthlyTotalDescTwo": "(valor mensual estimado, basado en un mes de 30 días)",
-  "discountMessage": "(valores con descuento promocional)"
+  "discountMessage": "(valores con descuento promocional)",
+  "vmNameAlreadyExists": "El nombre de la VM ya existe. Por favor, elija un nombre diferente."
 }

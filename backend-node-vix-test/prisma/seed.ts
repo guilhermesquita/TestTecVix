@@ -46,6 +46,7 @@ async function main() {
         error instanceof Prisma.PrismaClientUnknownRequestError ||
         error instanceof Prisma.PrismaClientRustPanicError
       ) {
+        console.error(error);
         if (error.message.toLowerCase().includes("bigint")) {
           try {
             const newData = data.map((item) => {
