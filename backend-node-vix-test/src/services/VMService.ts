@@ -18,10 +18,10 @@ export class VMService {
   }
 
   async listAll(query: unknown, user: user) {
-    const validQuery = vmListAllSchema.parse(query);
+    const validQuery = vmListAllSchema.parse({ ...query! });
     return this.vMModel.listAll({
       query: validQuery,
-      // idBrandMaster: user.idBrandMaster,
+      idBrandMaster: user.idBrandMaster
     });
   }
 
@@ -62,12 +62,24 @@ export class VMService {
   async updateVM(idVM: number, data: unknown, user: user) {
     const validateDataSchema = vMUpdatedSchema.parse(data);
     const oldVM = await this.getById(idVM);
+    const idBrandMaster = user.idBrandMaster
+
 
     if (!oldVM) {
       throw new AppError(ERROR_MESSAGE.NOT_FOUND, STATUS_CODE.NOT_FOUND);
     }
 
-    const updatedVM = await this.vMModel.updateVM(idVM, validateDataSchema);
+    const isAllow = await this.verifyPermission(user, Number(oldVM.idBrandMaster));
+    if (!isAllow) {
+      throw new AppError(ERROR_MESSAGE.FORBIDDEN, STATUS_CODE.FORBIDDEN);
+    }
+
+    const vmNameExists = await this.vMModel.checkVMName(validateDataSchema.vmName!, Number(oldVM.idBrandMaster));
+    if (vmNameExists) {
+      throw new AppError(ERROR_MESSAGE.VM_NAME_ALREADY_EXISTS, STATUS_CODE.BAD_REQUEST);
+    }
+
+    const updatedVM = await this.vMModel.updateVM(idVM, { ...validateDataSchema, idBrandMaster });
     return updatedVM;
   }
 
@@ -76,6 +88,12 @@ export class VMService {
     if (!oldVM) {
       throw new AppError(ERROR_MESSAGE.NOT_FOUND, STATUS_CODE.NOT_FOUND);
     }
+
+    const isAllow = await this.verifyPermission(user, Number(oldVM.idBrandMaster));
+    if (!isAllow) {
+      throw new AppError(ERROR_MESSAGE.FORBIDDEN, STATUS_CODE.FORBIDDEN);
+    }
+
     const deletedVm = await this.vMModel.deleteVM(idVM);
     return deletedVm;
   }

@@ -51,9 +51,7 @@ Table vM {
   updatedAt DateTime [default: `now()`]
   deletedAt DateTime
   os String
-  idUser String [not null]
   brandMaster brandMaster
-  user user [not null]
 }
 
 Table user {
@@ -70,7 +68,6 @@ Table user {
   updatedAt DateTime [default: `now()`]
   deletedAt DateTime
   brandMaster brandMaster
-  vMs vM [not null]
 }
 
 Enum EVMStatus {
@@ -96,7 +93,5 @@ Enum ETaskLocation {
 }
 
 Ref: vM.idBrandMaster > brandMaster.idBrandMaster
-
-Ref: vM.idUser > user.idUser
 
 Ref: user.idBrandMaster > brandMaster.idBrandMaster

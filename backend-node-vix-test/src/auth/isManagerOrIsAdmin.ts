@@ -14,7 +14,7 @@ export const isManagerOrIsAdmin = async (
     const role = req.user?.role;
 
     if (role !== ERole.admin && role !== ERole.manager) {
-      return res.status(STATUS_CODE.FORBIDDEN).json(ERROR_MESSAGE.FORBIDDEN);
+      return res.status(STATUS_CODE.FORBIDDEN).json({ message: ERROR_MESSAGE.FORBIDDEN });
     }
 
     next();

@@ -17,14 +17,14 @@ export const authUser = async (
     if (!authHeader) {
       return res
         .status(STATUS_CODE.UNAUTHORIZED)
-        .json(ERROR_MESSAGE.UNAUTHORIZED);
+        .json({ message: ERROR_MESSAGE.UNAUTHORIZED });
     }
 
     const token = authHeader.split(" ")[1];
     if (!token) {
       return res
         .status(STATUS_CODE.UNAUTHORIZED)
-        .json(ERROR_MESSAGE.UNAUTHORIZED);
+        .json({ message: ERROR_MESSAGE.UNAUTHORIZED });
     }
 
     const decode = jwtVerifySign(token);
@@ -36,11 +36,11 @@ export const authUser = async (
     if (!user) {
       return res
         .status(STATUS_CODE.UNAUTHORIZED)
-        .json(ERROR_MESSAGE.UNAUTHORIZED);
+        .json({ message: ERROR_MESSAGE.UNAUTHORIZED });
     }
 
     if (!user.isActive) {
-      return res.status(STATUS_CODE.FORBIDDEN).json(ERROR_MESSAGE.FORBIDDEN);
+      return res.status(STATUS_CODE.FORBIDDEN).json({ message: ERROR_MESSAGE.FORBIDDEN });
     }
 
     req.user = user;
@@ -49,15 +49,15 @@ export const authUser = async (
     if (error instanceof JsonWebTokenError) {
       return res
         .status(STATUS_CODE.UNAUTHORIZED)
-        .json(ERROR_MESSAGE.INVALID_TOKEN);
+        .json({ message: ERROR_MESSAGE.INVALID_TOKEN });
     }
     if (error instanceof TokenExpiredError) {
       return res
         .status(STATUS_CODE.UNAUTHORIZED)
-        .json(ERROR_MESSAGE.TOKEN_EXPIRED);
+        .json({ message: ERROR_MESSAGE.TOKEN_EXPIRED });
     }
     return res
       .status(STATUS_CODE.SERVER_ERROR)
-      .json(ERROR_MESSAGE.SERVER_ERROR);
+      .json({ message: ERROR_MESSAGE.SERVER_ERROR });
   }
 };
