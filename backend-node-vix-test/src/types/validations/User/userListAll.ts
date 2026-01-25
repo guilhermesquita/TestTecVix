@@ -35,7 +35,9 @@ export const userListAllSchema = z.object({
       .transform((val) => parseInt(val))
       .refine((val) => !isNaN(val) && val > 0, {
         message: "idBrandMaster must be a valid positive number",
-      }),
+      })
+      .optional(),
+    nameBrandMaster: z.string().optional(),
     page: z
       .string()
       .optional()

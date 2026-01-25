@@ -44,5 +44,14 @@
   "ok": "OK",
   "registersManagement": "Gestión de registros",
   "pinCode": "PinCode",
-  "areYouSure": "¿Está seguro de que desea eliminar el usuario {{ username }}?"
+  "areYouSure": "¿Está seguro de que desea eliminar el usuario {{ username }}?",
+  "cannotDeactivateSelf": "No puedes desactivar tu propio usuario.",
+  "confirmDelete": "Confirmar Eliminación",
+  "deleteMessage": "¿Está seguro de que desea eliminar el usuario {{username}}? Esta acción no se puede deshacer.",
+  "cancel": "Cancelar",
+  "delete": "Eliminar",
+  "userCreatedSuccess": "¡Usuario creado con éxito!",
+  "userUpdatedSuccess": "¡Usuario actualizado con éxito!",
+  "userDeletedSuccess": "¡Usuario eliminado con éxito!",
+  "forbiddenMspError": "No tienes permiso para gestionar usuarios de esta empresa"
 }

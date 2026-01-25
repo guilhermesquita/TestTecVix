@@ -9,7 +9,7 @@ import { genToken } from "../utils/jwt";
 import { validateRegisterUser } from "../utils/validateRegisterUser";
 
 export class AuthService {
-  constructor() {}
+  constructor() { }
   private readonly authModel = new AuthModel();
 
   async register(data: unknown) {
@@ -43,6 +43,8 @@ export class AuthService {
       throw new AppError(ERROR_MESSAGE.UNAUTHORIZED, STATUS_CODE.UNAUTHORIZED);
     }
 
+    await this.authModel.updateLastLoginDate(user.idUser);
+
     return {
       user: {
         idUser: user.idUser,
@@ -55,10 +57,10 @@ export class AuthService {
       },
       token: user.isActive
         ? genToken({
-            idUser: user.idUser,
-            role: user.role,
-            idBrandMaster: user.idBrandMaster ?? null,
-          })
+          idUser: user.idUser,
+          role: user.role,
+          idBrandMaster: user.idBrandMaster ?? null,
+        })
         : null,
     };
   }
