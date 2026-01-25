@@ -64,4 +64,21 @@ export class AuthService {
         : null,
     };
   }
+  async refreshToken(idUser: string) {
+    const user = await this.authModel.getUserById(idUser);
+
+    if (!user || !user.isActive) {
+      throw new AppError(ERROR_MESSAGE.UNAUTHORIZED, STATUS_CODE.UNAUTHORIZED);
+    }
+
+    await this.authModel.updateLastLoginDate(user.idUser);
+
+    const token = genToken({
+      idUser: user.idUser,
+      role: user.role,
+      idBrandMaster: user.idBrandMaster ?? null,
+    });
+
+    return { token };
+  }
 }

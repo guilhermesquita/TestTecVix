@@ -61,4 +61,18 @@ export class AuthModel {
       },
     });
   }
+
+  async getUserById(idUser: string) {
+    return await prisma.user.findUnique({
+      where: {
+        idUser,
+      },
+      select: {
+        idUser: true,
+        role: true,
+        idBrandMaster: true,
+        isActive: true,
+      },
+    });
+  }
 }
