@@ -33,6 +33,7 @@ interface IMspRegisterPage {
   brandObjectName: string;
   cityCode: string;
   district: string;
+  timezone: string;
   alertMessage: string | null;
   enterOnEditing: boolean;
   showCnpjError: boolean;
@@ -43,6 +44,8 @@ interface IMspRegisterPage {
   brandMasterDeleted: IBrandMasterBasicInfo | null;
   vmsToBeDeleted: IVMCreatedResponse[];
   notesBrandMasterDescription: string;
+  minConsumption: string;
+  discountPercentage: string;
 }
 
 const INIT_STATE: IMspRegisterPage = {
@@ -75,6 +78,7 @@ const INIT_STATE: IMspRegisterPage = {
   brandObjectName: "",
   cityCode: "",
   district: "",
+  timezone: "",
   alertMessage: null,
   enterOnEditing: false,
   showCnpjError: false,
@@ -85,6 +89,8 @@ const INIT_STATE: IMspRegisterPage = {
   brandMasterDeleted: null,
   vmsToBeDeleted: [],
   notesBrandMasterDescription: "",
+  minConsumption: "0",
+  discountPercentage: "0",
 };
 
 const {
@@ -135,6 +141,7 @@ interface IMspRegisterPageState extends IMspRegisterPage {
   }) => void;
   setCityCode: (cityCode: string) => void;
   setDistrict: (district: string) => void;
+  setTimezone: (timezone: string) => void;
   setAlertMessage: (alertMessage: string | null) => void;
   setEnterOnEditing: (enterOnEditing: boolean) => void;
   setShowCnpjError: (showCnpjError: boolean) => void;
@@ -147,6 +154,8 @@ interface IMspRegisterPageState extends IMspRegisterPage {
   ) => void;
   setVmsToBeDeleted: (vmsToBeDeleted: IVMCreatedResponse[]) => void;
   setNotesBrandMasterDescription: (notesBrandMasterDescription: string) => void;
+  setMinConsumption: (minConsumption: string) => void;
+  setDiscountPercentage: (discountPercentage: string) => void;
 }
 
 export const useZMspRegisterPage = create<IMspRegisterPageState>((set) => ({
@@ -195,6 +204,7 @@ export const useZMspRegisterPage = create<IMspRegisterPageState>((set) => ({
     set((state) => ({ ...state, brandLogoUrl, brandObjectName })),
   setCityCode: (cityCode: string) => set((state) => ({ ...state, cityCode })),
   setDistrict: (district: string) => set((state) => ({ ...state, district })),
+  setTimezone: (timezone: string) => set((state) => ({ ...state, timezone })),
   setAlertMessage: (alertMessage: string | null) =>
     set((state) => ({ ...state, alertMessage })),
   setEnterOnEditing: (enterOnEditing: boolean) =>
@@ -218,4 +228,8 @@ export const useZMspRegisterPage = create<IMspRegisterPageState>((set) => ({
       notesBrandMasterDescription,
     }));
   },
+  setMinConsumption: (minConsumption: string) =>
+    set((state) => ({ ...state, minConsumption })),
+  setDiscountPercentage: (discountPercentage: string) =>
+    set((state) => ({ ...state, discountPercentage })),
 }));

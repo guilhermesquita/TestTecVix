@@ -19,4 +19,5 @@ export const ERROR_MESSAGE = {
   USERNAME_ALREADY_EXISTS: "Username already exists",
   EMAIL_ALREADY_EXISTS: "Email already exists",
   VM_NAME_ALREADY_EXISTS: "VM name already exists",
+  BRAND_MASTER_ALREADY_EXISTS: "Brand already exists",
 };
