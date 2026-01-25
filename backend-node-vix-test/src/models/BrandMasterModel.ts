@@ -74,6 +74,12 @@ export class BrandMasterModel {
     return { totalCount, result: brands };
   }
 
+  async checkBrandMasterExists(brandName: string) {
+    return prisma.brandMaster.findFirst({
+      where: { brandName },
+    });
+  }
+
   async createNewBrandMaster(data: TBrandMaster) {
     return prisma.brandMaster.create({ data });
   }
@@ -86,9 +92,16 @@ export class BrandMasterModel {
   }
 
   async deleteBrandMaster(idBrandMaster: number) {
+    const brand = await this.getById(idBrandMaster);
+    if (!brand) return null;
+
     return prisma.brandMaster.update({
       where: { idBrandMaster },
-      data: { updatedAt: new Date(), deletedAt: new Date() },
+      data: {
+        updatedAt: new Date(),
+        deletedAt: new Date(),
+        brandName: `${brand.brandName} Deleted`,
+      },
     });
   }
 }

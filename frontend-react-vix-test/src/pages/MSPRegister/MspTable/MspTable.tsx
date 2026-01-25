@@ -9,9 +9,9 @@ import { PencilCicleIcon } from "../../../icons/PencilCicleIcon";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useZUserProfile } from "../../../stores/useZUserProfile";
-import { useZMspRegisterPage } from "../../../stores/useZMspRegisterPage";
 import { useBrandMasterResources } from "../../../hooks/useBrandMasterResources";
 import moment from "moment";
+import { useZMspRegisterPage } from "../../../stores/useZMspRegisterPage";
 
 export const MspTable = () => {
   const { theme, mode } = useZTheme();
@@ -49,7 +49,7 @@ export const MspTable = () => {
 
   const { listAllBrands } = useBrandMasterResources();
 
-  const { role } = useZUserProfile();
+  const { role, idBrand: userIdBrand } = useZUserProfile();
 
   useEffect(() => {
     const fetchMsps = async () => {
@@ -268,46 +268,50 @@ export const MspTable = () => {
                   </TextRob14Font1Xs>
                 )}
               </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: "8px",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                  "@media (max-width: 600px)": { display: "none" },
-                }}
-              >
-                <IconButton
-                  onClick={() =>
-                    isEditing.includes(msp.idBrandMaster)
-                      ? saveEdit()
-                      : handleEdit(msp.idBrandMaster)
-                  }
+              {(role === "admin" || role === "manager") && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "8px",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    "@media (max-width: 600px)": { display: "none" },
+                  }}
                 >
-                  {isEditing.includes(msp.idBrandMaster) ? (
-                    <CheckCircleOutlineRoundedIcon
-                      sx={{
-                        color: theme[mode].blueMedium,
-                        width: "24px",
-                        height: "24px",
-                      }}
-                    />
-                  ) : (
-                    <PencilCicleIcon fill={theme[mode].blueMedium} />
+                  {(userIdBrand === null || userIdBrand === msp.idBrandMaster) && (
+                    <IconButton
+                      onClick={() =>
+                        isEditing.includes(msp.idBrandMaster)
+                          ? saveEdit()
+                          : handleEdit(msp.idBrandMaster)
+                      }
+                    >
+                      {isEditing.includes(msp.idBrandMaster) ? (
+                        <CheckCircleOutlineRoundedIcon
+                          sx={{
+                            color: theme[mode].blueMedium,
+                            width: "24px",
+                            height: "24px",
+                          }}
+                        />
+                      ) : (
+                        <PencilCicleIcon fill={theme[mode].blueMedium} />
+                      )}
+                    </IconButton>
                   )}
-                </IconButton>
-                {role === "admin" && (
-                  <IconButton
-                    onClick={() => {
-                      setMspToBeDeleted(msp);
-                      setModalOpen("deletedMsp");
-                    }}
-                  >
-                    <DeleteForeverIcon sx={{ color: theme[mode].danger }} />
-                  </IconButton>
-                )}
-              </Box>
+                  {role === "admin" && (userIdBrand === null || userIdBrand === msp.idBrandMaster) && (
+                    <IconButton
+                      onClick={() => {
+                        setMspToBeDeleted(msp);
+                        setModalOpen("deletedMsp");
+                      }}
+                    >
+                      <DeleteForeverIcon sx={{ color: theme[mode].danger }} />
+                    </IconButton>
+                  )}
+                </Box>
+              )}
             </Box>
             {index !== mspList.length - 1 && (
               <div

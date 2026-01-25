@@ -2,11 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 import { ZodError } from "zod";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import multer from "multer";
 
 export const errorHandler = (
   err:
     | AppError
     | ZodError
+    | Error
     | {
       status?: number;
     },
@@ -25,9 +27,17 @@ export const errorHandler = (
       .json({ message: err.issues.map((issue) => issue.message).join(",\n ") });
   }
 
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({ message: "The file is too large. The maximum limit is 50MB." });
+    }
+    return res.status(400).json({ message: err.message });
+  }
+
   if (err instanceof PrismaClientKnownRequestError) {
     return res.status(400).json(err);
   }
-  console.log(err);
-  return res.status(err?.status || 500).json(err);
+  const status = (err as any)?.status || 500;
+  const message = (err as any)?.message || "Internal Server Error";
+  return res.status(status).json({ message });
 };

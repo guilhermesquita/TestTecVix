@@ -5,8 +5,11 @@ import { user } from "@prisma/client";
 import { STATUS_CODE } from "../constants/statusCode";
 
 export class BrandMasterController {
-  constructor() {}
-  private brandMasterService = new BrandMasterService();
+  private brandMasterService: BrandMasterService;
+
+  constructor(brandMasterService?: BrandMasterService) {
+    this.brandMasterService = brandMasterService || new BrandMasterService();
+  }
 
   async getSelf(req: CustomRequest<unknown>, res: Response) {
     return res.status(STATUS_CODE.OK).json(null);
@@ -50,6 +53,24 @@ export class BrandMasterController {
       Number(idBrandMaster),
       user,
     );
+    return res.status(STATUS_CODE.OK).json(result);
+  }
+
+  async uploadLogo(req: CustomRequest<unknown>, res: Response) {
+    const user = req.user as user;
+    const { idBrandMaster } = req.params;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(STATUS_CODE.BAD_REQUEST).json({ message: "No file uploaded" });
+    }
+
+    const result = await this.brandMasterService.uploadLogo(
+      Number(idBrandMaster),
+      file,
+      user
+    );
+
     return res.status(STATUS_CODE.OK).json(result);
   }
 }

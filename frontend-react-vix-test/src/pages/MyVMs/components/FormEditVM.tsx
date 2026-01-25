@@ -2,7 +2,6 @@ import { Divider, IconButton, Stack } from "@mui/material";
 import { TextRob18Font2M } from "../../../components/Text2M";
 import { useZTheme } from "../../../stores/useZTheme";
 import { useTranslation } from "react-i18next";
-import { LabelInputVM } from "../../VirtualMachine/components/LabelInputVM";
 import { useState } from "react";
 import { useVmResource } from "../../../hooks/useVmResource";
 import { TOptions } from "../../../types/FormType";
@@ -25,6 +24,7 @@ import { ModalDeleteVM } from "./ModalDeleteVM";
 import { AbsoluteBackDrop } from "../../../components/AbsoluteBackDrop";
 import { ModalStartVM } from "./ModalStartVM";
 import { ModalStopVM } from "./ModalStopVM";
+import { LabelInput } from "../../../components/Inputs/LabelInputs";
 
 interface IProps {
   onClose: (edit?: boolean) => void;
@@ -202,7 +202,7 @@ export const FormEditVM = ({ onClose }: IProps) => {
             },
           }}
         >
-          <LabelInputVM
+          <LabelInput
             disabled
             onChange={() => { }}
             value={"root"}
@@ -214,7 +214,7 @@ export const FormEditVM = ({ onClose }: IProps) => {
               width: "100%",
             }}
           >
-            <LabelInputVM
+            <LabelInput
               onChange={() => { }}
               value={vmPassword}
               label={t("createVm.password")}
@@ -230,7 +230,7 @@ export const FormEditVM = ({ onClose }: IProps) => {
             borderColor: theme[mode].grayLight,
           }}
         />
-        <LabelInputVM
+        <LabelInput
           onChange={setVmName}
           value={vmName}
           label={t("createVm.vmName")}

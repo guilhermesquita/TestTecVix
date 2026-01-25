@@ -380,6 +380,31 @@ export const useBrandMasterResources = () => {
     return response.data;
   };
 
+  const uploadBrandLogo = async (idBrandMaster: number, file: File) => {
+    if (!idBrandMaster || !file) return null;
+    const auth = await getAuth();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setIsLoading(true);
+    const response = await api.put<INewMSPResponse>({
+      url: `/brand-master/${idBrandMaster}/logo`,
+      auth: {
+        ...auth,
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    });
+    setIsLoading(false);
+
+    if (response.error) {
+      toast.error(response.message);
+      return null;
+    }
+
+    return response.data;
+  };
+
   return {
     isLoading,
     updateBrandMaster,
@@ -390,5 +415,6 @@ export const useBrandMasterResources = () => {
     deleteBrandMaster,
     editBrandMaster,
     getSelf,
+    uploadBrandLogo,
   };
 };

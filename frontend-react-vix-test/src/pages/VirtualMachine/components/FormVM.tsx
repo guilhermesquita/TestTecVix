@@ -1,5 +1,4 @@
 import { Divider, Stack } from "@mui/material";
-import { LabelInputVM } from "./LabelInputVM";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { TextRob18Font2M } from "../../../components/Text2M";
@@ -21,6 +20,7 @@ import { AbsoluteBackDrop } from "../../../components/AbsoluteBackDrop";
 import { BTNISOsSection } from "./BTNISOsSection";
 import { useZVM } from "../../../stores/useZVM";
 import { useOperatingSystems } from "../../../hooks/useOperatingSystems";
+import { LabelInput } from "../../../components/Inputs/LabelInputs";
 
 export const FormVM = () => {
   const { t } = useTranslation(); // createVm
@@ -179,7 +179,7 @@ export const FormVM = () => {
             },
           }}
         >
-          <LabelInputVM
+          <LabelInput
             disabled
             onChange={() => { }}
             value={"root"}
@@ -191,7 +191,7 @@ export const FormVM = () => {
               width: "100%",
             }}
           >
-            <LabelInputVM
+            <LabelInput
               onChange={setVmPassword}
               value={vmPassword}
               label={t("createVm.password")}
@@ -206,7 +206,7 @@ export const FormVM = () => {
             borderColor: theme[mode].grayLight,
           }}
         />
-        <LabelInputVM
+        <LabelInput
           onChange={setVmName}
           value={vmName}
           label={t("createVm.vmName")}
