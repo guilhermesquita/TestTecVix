@@ -5,7 +5,7 @@ import { STATUS_CODE } from "../constants/statusCode";
 import { AuthService } from "../services/AuthService";
 
 export class AuthController {
-  constructor() {}
+  constructor() { }
   private authService = new AuthService();
   async register(req: CustomRequest<unknown>, res: Response): Promise<void> {
     try {
@@ -18,6 +18,15 @@ export class AuthController {
 
   async login(req: CustomRequest<unknown>, res: Response): Promise<void> {
     const result = await this.authService.login(req.body);
+    res.status(STATUS_CODE.OK).json(result);
+  }
+  async refreshToken(req: CustomRequest<unknown>, res: Response): Promise<void> {
+    const { idUser } = req.params as { idUser: string };
+    if (!idUser) {
+      res.status(STATUS_CODE.BAD_REQUEST).json({ error: "Missing idUser" });
+      return;
+    }
+    const result = await this.authService.refreshToken(idUser);
     res.status(STATUS_CODE.OK).json(result);
   }
 }
