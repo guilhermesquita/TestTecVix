@@ -1308,7 +1308,7 @@ label+.emotion-21 {
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeMedium MuiInputLabel-standard MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeMedium MuiInputLabel-standard username emotion-14"
               data-shrink="true"
-              for="bootstrap-input-username"
+              for="bootstrap-input-email"
             >
               <p
                 class="MuiTypography-root MuiTypography-body1 emotion-15"
