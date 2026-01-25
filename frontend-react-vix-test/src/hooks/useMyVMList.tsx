@@ -22,7 +22,6 @@ export const useMyVMList = () => {
   ) => {
     const auth = await getAuth();
     setIsLoading(true);
-    console.log(params);
     const response = await api.get<IListAll<IVMCreatedResponse>>({
       url: "/vm",
       auth,

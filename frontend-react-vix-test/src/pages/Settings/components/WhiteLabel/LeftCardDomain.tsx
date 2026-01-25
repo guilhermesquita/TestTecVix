@@ -7,6 +7,7 @@ import { TextRob14Font1Xs } from "../../../../components/Text1Xs";
 import { useZBrandInfo } from "../../../../stores/useZBrandStore";
 import { useBrandMasterResources } from "../../../../hooks/useBrandMasterResources";
 import { AbsoluteBackDrop } from "../../../../components/AbsoluteBackDrop";
+import { useState } from "react";
 
 interface IWhiteLabelChildProps {
   theme: {
@@ -24,37 +25,21 @@ export const LeftCardDomain = ({ theme }: IWhiteLabelChildProps) => {
     setBrandInfo,
     domain: domainName,
   } = useZBrandInfo();
-  // const [domain, setDomain] = useState<string>(domainName);
-  // const { updateDomain } = useBrandMasterResources();
+  const [domain, setDomain] = useState<string>(domainName || "");
   const { updateBrandMaster, isLoading } = useBrandMasterResources();
-
-  // const handleSave = async () => {
-  //   const response = await updateBrandMaster({
-  //     domain,
-  //     brandLogo: brandObjectName || undefined,
-  //   });
-  //   if (!response) return;
-  //   if (domain !== domainName) {
-  //     const r = await updateDomain(domain);
-  //     if (!r) return;
-  //   }
-  //   setBrandInfo({
-  //     ...(brandLogoTemp
-  //       ? { brandLogo: brandLogoTemp, brandLogoTemp: "", brandObjectName: "" }
-  //       : {}),
-  //     domain,
-  //   });
-  // };
 
   const handleSave = async () => {
     const response = await updateBrandMaster({
+      domain,
       brandLogo: brandObjectName || undefined,
     });
     if (!response) return;
+
     setBrandInfo({
       ...(brandLogoTemp
         ? { brandLogo: brandLogoTemp, brandLogoTemp: "", brandObjectName: "" }
         : {}),
+      domain,
     });
   };
 
@@ -73,17 +58,10 @@ export const LeftCardDomain = ({ theme }: IWhiteLabelChildProps) => {
       </TextRob16FontL>
       <SimpleInput
         placeholder="Domain/Subdomain"
-        onChange={() => {}}
-        value={domainName}
-        disabled
+        onChange={setDomain}
+        value={domain}
         sx={{
           marginBottom: "24px",
-          "& .Mui-disabled": {
-            color: theme[mode].gray,
-            pointerEvents: "inherit",
-            cursor: "not-allowed",
-            WebkitTextFillColor: "unset",
-          },
         }}
         inputSx={{
           width: "100%",
@@ -91,7 +69,6 @@ export const LeftCardDomain = ({ theme }: IWhiteLabelChildProps) => {
           boxSizing: "border-box",
           padding: "16px",
           borderRadius: "12px",
-          background: theme[mode].grayLight,
           color: theme[mode].gray,
         }}
       />

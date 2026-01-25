@@ -24,5 +24,6 @@
   "wishConfirm": "¿Desea confirmar sus cambios?",
   "cannotBeUndone": "Esta acción no se puede deshacer.",
   "confirmChanges": "Confirmar cambios",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "mspUpdateSuccess": "¡MSP actualizado con éxito!"
 }

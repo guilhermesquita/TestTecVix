@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { themeColors, useZTheme } from "../../../../stores/useZTheme";
-import { useUploadFile } from "../../../../hooks/useUploadFile";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { TextRob16Font1S } from "../../../../components/Text1S";
@@ -10,6 +9,9 @@ import { TextRob12Font2Xs } from "../../../../components/Text2Xs";
 import { CircleIcon } from "../../../../icons/CircleIcon";
 import { TextRob16FontL } from "../../../../components/TextL";
 import { useZBrandInfo } from "../../../../stores/useZBrandStore";
+import { useBrandMasterResources } from "../../../../hooks/useBrandMasterResources";
+import { useUploadFile } from "../../../../hooks/useUploadFile";
+import { useZUserProfile } from "../../../../stores/useZUserProfile";
 
 interface IWhiteLabelChildProps {
   theme: {
@@ -21,29 +23,43 @@ interface IWhiteLabelChildProps {
 export const LeftCardLogo = ({ theme }: IWhiteLabelChildProps) => {
   const { mode } = useZTheme();
   const { t } = useTranslation();
-  const { handleUpload, isUploading } = useUploadFile();
-  const { setBrandInfo, brandLogoTemp } = useZBrandInfo();
+  const { uploadBrandLogo, updateBrandMaster } = useBrandMasterResources();
+  const { getFileByObjectName } = useUploadFile();
+  const { setBrandInfo, brandLogoTemp, brandLogo } = useZBrandInfo();
+  const { idBrand } = useZUserProfile();
+  const [isUploading, setIsUploading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<string | null>(
-    brandLogoTemp,
+    brandLogoTemp || brandLogo
   );
 
   const onDrop = async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) return;
+    if (acceptedFiles.length === 0 || !idBrand) return;
 
-    const file = acceptedFiles[0]; // Seleciona o primeiro arquivo
-    const response = await handleUpload(file);
+    const file = acceptedFiles[0];
+    setIsUploading(true);
+    const response = await uploadBrandLogo(idBrand, file);
+    setIsUploading(false);
 
-    if (response && response.url) {
-      setUploadedFile(response.url); // Atualiza a URL do logo carregado
-      setBrandInfo({
-        brandLogoTemp: response.url,
-        brandObjectName: response.objectName,
-      });
+    if (response && response.brandLogo) {
+      const { url } = await getFileByObjectName(response.brandLogo);
+      if (url) {
+        setUploadedFile(url);
+        setBrandInfo({
+          brandLogoTemp: url,
+          brandObjectName: response.brandLogo,
+          brandLogo: url
+        });
+      }
     }
   };
 
-  const hadleRemoveLogo = () => {
-    setBrandInfo({ brandLogoTemp: "" });
+  const handleRemoveLogo = async () => {
+    setIsUploading(true);
+    await updateBrandMaster({ brandLogo: "" }); // Envia string vazia para remover
+    setIsUploading(false);
+
+    setUploadedFile(null);
+    setBrandInfo({ brandLogoTemp: "", brandLogo: "", brandObjectName: "" });
   };
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
@@ -53,10 +69,8 @@ export const LeftCardLogo = ({ theme }: IWhiteLabelChildProps) => {
   });
 
   useEffect(() => {
-    if (!brandLogoTemp) {
-      setUploadedFile(null);
-    }
-  }, [brandLogoTemp]);
+    setUploadedFile(brandLogoTemp || brandLogo || null);
+  }, [brandLogoTemp, brandLogo]);
 
   return (
     <>
@@ -82,49 +96,35 @@ export const LeftCardLogo = ({ theme }: IWhiteLabelChildProps) => {
           alignItems: "center",
           gap: "16px",
           borderRadius: "16px",
-          background: isDragActive
-            ? theme[mode].grayLight
-            : theme[mode].lightV2,
+          background: uploadedFile
+            ? `url(${uploadedFile}) center/contain no-repeat`
+            : (isDragActive ? theme[mode].grayLight : theme[mode].lightV2),
           marginBottom: "24px",
           cursor: "pointer",
+          position: "relative",
+          overflow: "hidden"
         }}
       >
         <input {...getInputProps()} />
-        <UploadFileIcon color={theme[mode].tertiary} />
-        <TextRob12Font2Xs
-          sx={{
-            color: theme[mode].tertiary,
-            fontWeight: "400",
-            fontSize: "12px",
-            maxWidth: "136px",
-            textAlign: "center",
-            lineHeight: "20px",
-            userSelect: "none",
-          }}
-        >
-          {isUploading ? t("whiteLabel.loading") : t("whiteLabel.clickHere")}
-        </TextRob12Font2Xs>
+        {!uploadedFile && (
+          <>
+            <UploadFileIcon color={theme[mode].tertiary} />
+            <TextRob12Font2Xs
+              sx={{
+                color: theme[mode].tertiary,
+                fontWeight: "400",
+                fontSize: "12px",
+                maxWidth: "136px",
+                textAlign: "center",
+                lineHeight: "20px",
+                userSelect: "none",
+              }}
+            >
+              {isUploading ? t("whiteLabel.loading") : t("whiteLabel.clickHere")}
+            </TextRob12Font2Xs>
+          </>
+        )}
       </Box>
-      {uploadedFile && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginBottom: "24px",
-          }}
-        >
-          <img
-            src={uploadedFile}
-            alt="Logo carregado"
-            style={{
-              maxWidth: "100%",
-              maxHeight: "100px",
-              objectFit: "contain",
-            }}
-          />
-        </Box>
-      )}
       <Box
         sx={{
           display: "flex",
@@ -159,22 +159,24 @@ export const LeftCardLogo = ({ theme }: IWhiteLabelChildProps) => {
           {t("whiteLabel.changeLogo")}
         </Button>
         <Button
+          onClick={handleRemoveLogo}
+          disabled={!uploadedFile}
           sx={{
             background: "transparent",
-            color: theme[mode].blueDark,
-            border: `1px solid ${theme[mode].blueDark}`,
+            color: uploadedFile ? theme[mode].blueDark : theme[mode].gray,
+            border: `1px solid ${uploadedFile ? theme[mode].blueDark : theme[mode].gray}`,
             textTransform: "none",
             borderRadius: "12px",
             flexGrow: 1,
             height: "48px",
             fontWeight: "500",
             fontSize: "16px",
+            cursor: uploadedFile ? "pointer" : "not-allowed",
             "@media (max-width: 440px)": {
               flexGrow: 0,
               width: "100%",
             },
           }}
-          onClick={hadleRemoveLogo} // Remove o logo
         >
           {t("whiteLabel.removeLogo")}
         </Button>
