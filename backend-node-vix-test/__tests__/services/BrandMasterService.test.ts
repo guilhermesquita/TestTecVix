@@ -13,6 +13,18 @@ describe("BrandMasterService", () => {
     brandMasterModel = (brandMasterService as any).brandMasterModel;
   });
 
+  describe("getSelf", () => {
+    it("should call getSelf in model with correct domain", async () => {
+      const domain = "test.local";
+      brandMasterModel.getSelf.mockResolvedValue({ idBrandMaster: 1, brandName: "Test Brand" });
+
+      const result = await brandMasterService.getSelf(domain);
+
+      expect(brandMasterModel.getSelf).toHaveBeenCalledWith(domain);
+      expect(result).toEqual({ idBrandMaster: 1, brandName: "Test Brand" });
+    });
+  });
+
   describe("updateBrandMaster", () => {
     it("updateBrandMaster should be called", async () => {
       const idbrandMaster = 1;
