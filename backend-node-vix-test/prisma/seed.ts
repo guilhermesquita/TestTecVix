@@ -3,6 +3,11 @@ import fs from "fs/promises";
 
 const prisma = new PrismaClient();
 const SEEDS_FOLDER_NAME = ""; // "seeds" folder inside temp folder: ex: "temp/SEEDS_FOLDER_NAME"
+const SEED_ORDER: Prisma.ModelName[] = [
+  "brandMaster",
+  "vM",
+  "user",
+];
 
 async function main() {
   const isDroped = true;
@@ -34,11 +39,16 @@ async function main() {
 
   const seedTable = async (table: Prisma.ModelName) => {
     const data = await readFile(`${snakeToCamel(table)}.json`);
+    if (!data.length) return;
 
     try {
+      // @ts-expect-error dynamic access
+      await prisma[table].createMany({
+        data,
+        skipDuplicates: true,
+      });
+
       tablesTryAgain = tablesTryAgain.filter((t) => t !== table);
-      // @ts-expect-error ts(2349)
-      await prisma[table].createMany({ data });
     } catch (error) {
       if (
         error instanceof Error ||
