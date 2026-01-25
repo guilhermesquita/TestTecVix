@@ -10,25 +10,36 @@ import { UploadFileIcon } from "../../../../../icons/UploadFileIcon";
 import { TextRob12Font2Xs } from "../../../../../components/Text2Xs";
 import { CircleIcon } from "../../../../../icons/CircleIcon";
 import { useZUserProfile } from "../../../../../stores/useZUserProfile";
+import { useUserResources } from "../../../../../hooks/useUserResources";
+import { useEffect } from "react";
 
 export const PerfilPhotoUpload = () => {
   const { theme, mode } = useZTheme();
   const { t } = useTranslation();
-  const { handleUpload, isUploading } = useUploadFile();
-  const [uploadedFile, setUploadedFile] = useState<string | null>("");
-  const { setImage } = useZUserProfile();
+  const { handleUpload } = useUploadFile();
+  const { uploadUserImage } = useUserResources();
+  const { setImage, profileImgUrl, idUser } = useZUserProfile();
+  const [uploadedFile, setUploadedFile] = useState<string | null>(profileImgUrl || "");
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Sincronizar com o perfil do usuário
+  useEffect(() => {
+    if (profileImgUrl) setUploadedFile(profileImgUrl);
+  }, [profileImgUrl]);
 
   const onDrop = async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) return;
+    if (acceptedFiles.length === 0 || !idUser) return;
 
-    const file = acceptedFiles[0]; // Seleciona o primeiro arquivo
-    const response = await handleUpload(file);
+    const file = acceptedFiles[0];
+    setIsUploading(true);
+    const response = await uploadUserImage(idUser, file);
+    setIsUploading(false);
 
-    if (response && response.url) {
-      setUploadedFile(response.url); // Atualiza a URL do logo carregado
+    if (response && response.profileImgUrl) {
+      setUploadedFile(response.profileImgUrl);
       setImage({
-        imageUrl: response.url,
-        objectName: response.objectName,
+        imageUrl: response.profileImgUrl,
+        objectName: file.name,
       });
     }
   };
@@ -75,48 +86,35 @@ export const PerfilPhotoUpload = () => {
             alignItems: "center",
             gap: "16px",
             borderRadius: "16px",
-            background: isDragActive
-              ? theme[mode].grayLight
-              : theme[mode].lightV2,
+            background: uploadedFile
+              ? `url(${uploadedFile}) center/contain no-repeat`
+              : (isDragActive ? theme[mode].grayLight : theme[mode].lightV2),
             cursor: "pointer",
+            position: "relative",
+            overflow: "hidden"
           }}
         >
           <input {...getInputProps()} />
-          <UploadFileIcon color={theme[mode].tertiary} />
-          <TextRob12Font2Xs
-            sx={{
-              color: theme[mode].tertiary,
-              fontWeight: "400",
-              fontSize: "12px",
-              maxWidth: "136px",
-              textAlign: "center",
-              lineHeight: "20px",
-              userSelect: "none",
-            }}
-          >
-            {isUploading ? t("whiteLabel.loading") : t("whiteLabel.clickHere")}
-          </TextRob12Font2Xs>
+          {!uploadedFile && (
+            <>
+              <UploadFileIcon color={theme[mode].tertiary} />
+              <TextRob12Font2Xs
+                sx={{
+                  color: theme[mode].tertiary,
+                  fontWeight: "400",
+                  fontSize: "12px",
+                  maxWidth: "136px",
+                  textAlign: "center",
+                  lineHeight: "20px",
+                  userSelect: "none",
+                }}
+              >
+                {isUploading ? t("whiteLabel.loading") : t("whiteLabel.clickHere")}
+              </TextRob12Font2Xs>
+            </>
+          )}
         </Box>
-        {uploadedFile && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              marginBottom: "24px",
-            }}
-          >
-            <img
-              src={uploadedFile}
-              alt="Logo carregado"
-              style={{
-                maxWidth: "100%",
-                maxHeight: "100px",
-                objectFit: "contain",
-              }}
-            />
-          </Box>
-        )}
+
         <Stack sx={{ gap: "32px" }}>
           {/* above stack buttons of change and remove logo */}
           <Stack

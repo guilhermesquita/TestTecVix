@@ -164,6 +164,35 @@ export const useUserResources = () => {
     return response.data;
   };
 
+  const uploadUserImage = async (idUser: string, file: File) => {
+    if (!idUser || !file) return null;
+    const auth = await getAuth();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setIsLoading(true);
+    const response = await api.put<IUserDB>({
+      url: `/users/${idUser}/image`,
+      auth: {
+        ...auth,
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    });
+    setIsLoading(false);
+
+    if (response.error) {
+      toast.error(response.message);
+      return null;
+    }
+
+    if (idUser === currentUserId && response.data.profileImgUrl) {
+      setUser({ profileImgUrl: response.data.profileImgUrl });
+    }
+
+    return response.data;
+  };
+
   return {
     isLoading,
     listUsers,
@@ -171,5 +200,6 @@ export const useUserResources = () => {
     changeUserStatus,
     deleteUser,
     createUser,
+    uploadUserImage,
   };
 };
