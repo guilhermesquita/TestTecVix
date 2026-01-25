@@ -12,7 +12,16 @@ export class BrandMasterController {
   }
 
   async getSelf(req: CustomRequest<unknown>, res: Response) {
-    return res.status(STATUS_CODE.OK).json(null);
+    const origin = req.headers.origin || req.headers.host || "";
+    let domain = origin.replace(/^https?:\/\//, "");
+    domain = domain.split(":")[0];
+
+    if (!domain) {
+      return res.status(STATUS_CODE.OK).json(null);
+    }
+
+    const result = await this.brandMasterService.getSelf(domain);
+    return res.status(STATUS_CODE.OK).json(result);
   }
 
   async getById(req: CustomRequest<unknown>, res: Response) {
