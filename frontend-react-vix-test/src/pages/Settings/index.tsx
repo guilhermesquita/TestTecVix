@@ -10,6 +10,7 @@ import { TabPanel } from "../../components/Tab/TabPanel";
 import { ProfileAndNotifications } from "./components/ProfileAndNotifications";
 import { UnderConstruction } from "../../components/UnderConstruction";
 import { useEffect } from "react";
+import { useZUserProfile } from "../../stores/useZUserProfile";
 
 export interface IWhiteLabelChildProps {
   theme: {
@@ -22,13 +23,14 @@ export const SettingsPage = () => {
   const { mode, theme } = useZTheme();
   const { currentTabIndex, setSettings } = useZSettingsVar();
   const { t } = useTranslation();
+  const { role, idBrand } = useZUserProfile();
 
   const tabList = [
-    {
+    ...(role === "admin" && idBrand !== null ? [{
       label: t("tabs.whiteLabel"),
       component: <WhiteLabel />,
       title: t("whiteLabel.title"),
-    },
+    }] : []),
     {
       label: t("tabs.profileNotifications"),
       component: <ProfileAndNotifications />,

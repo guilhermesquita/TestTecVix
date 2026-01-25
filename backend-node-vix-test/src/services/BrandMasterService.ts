@@ -89,11 +89,13 @@ export class BrandMasterService {
       );
     }
     const brandMasterExists = await this.brandMasterModel.checkBrandMasterExists(validData.brandName!);
-    if (oldBrandMaster.brandName !== validData.brandName && brandMasterExists) {
-      throw new AppError(
-        ERROR_MESSAGE.BRAND_MASTER_ALREADY_EXISTS,
-        STATUS_CODE.BAD_REQUEST,
-      );
+    if (validData.brandName) {
+      if (oldBrandMaster.brandName !== validData.brandName && brandMasterExists) {
+        throw new AppError(
+          ERROR_MESSAGE.BRAND_MASTER_ALREADY_EXISTS,
+          STATUS_CODE.BAD_REQUEST,
+        );
+      }
     }
 
     if (

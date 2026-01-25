@@ -24,5 +24,6 @@
   "wishConfirm": "Do you wish to confirm your changes?",
   "cannotBeUndone": "This action cannot be undone.",
   "confirmChanges": "Confirm changes",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "mspUpdateSuccess": "MSP successfully updated!"
 }

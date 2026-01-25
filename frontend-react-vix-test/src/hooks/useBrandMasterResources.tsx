@@ -149,7 +149,7 @@ export const useBrandMasterResources = () => {
       toast.error(response.message);
       return;
     }
-    toast.success(t("whiteLabel.dnsSaved"));
+    toast.success(t("whiteLabel.mspUpdateSuccess"));
     return response.data;
   };
 
@@ -193,41 +193,6 @@ export const useBrandMasterResources = () => {
       termsOfUse: dataResponse?.termsOfUse || null,
       privacyPolicy: dataResponse?.privacyPolicy || null,
     });
-
-    return response.data;
-  };
-
-  const updateDomain = async (domain: string) => {
-    if (role !== "admin" && role !== "manager") {
-      toast.error(t("generic.errorOlnlyAdmin"));
-      return;
-    }
-
-    if (role !== "admin" && true) {
-      toast.error(t("generic.errorOlnlyAdmin"));
-      return;
-    }
-
-    if (idBrandInfo !== idBrand) {
-      toast.error(t("generic.errorToSaveData"));
-      return;
-    }
-
-    const auth = await getAuth();
-    setIsLoading(true);
-    const response = await api.post({
-      url: `/dns/register`,
-      auth,
-      data: {
-        idBrandMaster: idBrand,
-        domain,
-      },
-    });
-    setIsLoading(false);
-    if (response.error) {
-      toast.error(response.message);
-      return;
-    }
 
     return response.data;
   };
@@ -409,7 +374,6 @@ export const useBrandMasterResources = () => {
     isLoading,
     updateBrandMaster,
     updateBrandMasterInfo,
-    updateDomain,
     createAnewBrandMaster,
     listAllBrands,
     deleteBrandMaster,
