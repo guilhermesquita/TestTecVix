@@ -12,6 +12,12 @@ import { LabelInput } from "../../../components/Inputs/LabelInputs";
 import { useZMspRegisterPage } from "../../../stores/useZMspRegisterPage";
 import { useRef, useState } from "react";
 import { useZUserProfile } from "../../../stores/useZUserProfile";
+import { useDropzone } from "react-dropzone";
+import { UploadFileIcon } from "../../../icons/UploadFileIcon";
+import { CircleIcon } from "../../../icons/CircleIcon";
+import { TextRob12Font2Xs } from "../../../components/Text2Xs";
+import { TextRob14Font1Xs } from "../../../components/Text1Xs";
+import { Button } from "@mui/material";
 
 export const FormMSP = () => {
     const { t } = useTranslation();
@@ -241,20 +247,27 @@ export const FormMSP = () => {
         }
     }, [cep, setStreet, setDistrict, setCity, setCountryState, setShowCepError, t]);
 
-    const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            setSelectedLogoFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setLogoPreviewUrl(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-        }
+    const onDrop = (acceptedFiles: File[]) => {
+        if (acceptedFiles.length === 0) return;
+
+        const file = acceptedFiles[0];
+        setSelectedLogoFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setLogoPreviewUrl(reader.result as string);
+        };
+        reader.readAsDataURL(file);
     };
 
+    const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+        onDrop,
+        accept: { "image/*": [".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"] },
+        maxSize: 50 * 1024 * 1024, // Limita para 50MB
+        noClick: true,
+    });
+
     const handleTriggerUpload = () => {
-        fileInputRef.current?.click();
+        open();
     };
 
     const handleRemoveLogo = () => {
@@ -463,101 +476,147 @@ export const FormMSP = () => {
                         <>
                             <Divider sx={{ borderColor: theme[mode].grayLight }} />
 
-                            <Box
-                                sx={{
-                                    mt: 1,
-                                    display: "grid",
-                                    gridTemplateColumns: {
-                                        xs: "1fr",
-                                        md: "200px 165px 1fr",
-                                    },
-                                    alignItems: "flex-start",
-                                }}
-                            >
-                                <input
-                                    type="file"
-                                    accept=".svg, .png, .jpg, .jpeg, .gif, .webp"
-                                    hidden
-                                    ref={fileInputRef}
-                                    onChange={handleLogoChange}
-                                />
+                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: "24px", mt: 1 }}>
                                 <Box
+                                    {...getRootProps()}
                                     onClick={handleTriggerUpload}
                                     sx={{
-                                        width: "200px",
-                                        height: "135px",
-                                        border: `1px dashed ${theme[mode].gray}`,
-                                        borderRadius: "8px",
+                                        maxWidth: "329px",
+                                        width: "100%",
+                                        height: "169px",
+                                        border: `1px solid ${theme[mode].grayLight}`,
                                         display: "flex",
-                                        alignItems: "center",
+                                        flexDirection: "column",
                                         justifyContent: "center",
+                                        alignItems: "center",
+                                        gap: "16px",
+                                        borderRadius: "16px",
+                                        background: isDragActive
+                                            ? theme[mode].grayLight
+                                            : theme[mode].lightV2,
                                         cursor: "pointer",
-                                        backgroundColor: theme[mode].mainBackground,
                                     }}
                                 >
-                                    <Stack alignItems="center" gap="8px">
-                                        <Box
-                                            component="img"
-                                            src="https://img.icons8.com/material-outlined/24/null/upload--v1.png"
-                                            sx={{ filter: mode === "dark" ? "invert(1)" : "none" }}
-                                        />
-                                        <Typography
-                                            variant="caption"
-                                            sx={{ color: theme[mode].gray, textAlign: "center", px: 2 }}
-                                        >
-                                            {t("mspRegister.clickToUpload")}
-                                        </Typography>
-                                    </Stack>
-                                </Box>
-
-                                <Box
-                                    sx={{
-                                        width: "165px",
-                                        height: "50px",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        mt: "8px", // 🔹 alinha visualmente com o texto da direita
-                                    }}
-                                >
-                                    <Box
-                                        component="img"
-                                        src={logoPreviewUrl || brandLogoUrl}
-                                        alt="Brand logo"
+                                    <input {...getInputProps()} />
+                                    <UploadFileIcon color={theme[mode].tertiary} />
+                                    <TextRob12Font2Xs
                                         sx={{
-                                            maxWidth: "100%",
-                                            maxHeight: "100%",
-                                            objectFit: "contain",
-                                            display: (logoPreviewUrl || brandLogoUrl) ? "block" : "none"
+                                            color: theme[mode].tertiary,
+                                            fontWeight: "400",
+                                            fontSize: "12px",
+                                            maxWidth: "136px",
+                                            textAlign: "center",
+                                            lineHeight: "20px",
+                                            userSelect: "none",
                                         }}
-                                    />
+                                    >
+                                        {t("whiteLabel.clickHere")}
+                                    </TextRob12Font2Xs>
                                 </Box>
 
-                                <Stack gap="4px">
-                                    <Typography
-                                        onClick={handleTriggerUpload}
-                                        sx={{ color: theme[mode].blue, cursor: "pointer", fontSize: "14px" }}
+                                {(logoPreviewUrl || brandLogoUrl) && (
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}
                                     >
-                                        {t("mspRegister.changeLogo")}
-                                    </Typography>
-                                    <Typography
-                                        onClick={handleRemoveLogo}
-                                        sx={{ color: theme[mode].danger, cursor: "pointer", fontSize: "14px" }}
-                                    >
-                                        {t("mspRegister.removeLogo")}
-                                    </Typography>
-
-                                    <Box sx={{ mt: 1 }}>
-                                        <Typography variant="caption" display="block" sx={{ color: theme[mode].gray }}>
-                                            {t("mspRegister.logoStandard")}
-                                        </Typography>
-                                        <Typography variant="caption" display="block" sx={{ color: theme[mode].gray }}>
-                                            {t("mspRegister.logoSize")}
-                                        </Typography>
-                                        <Typography variant="caption" display="block" sx={{ color: theme[mode].gray }}>
-                                            {t("mspRegister.logoFormats")}
-                                        </Typography>
+                                        <img
+                                            src={logoPreviewUrl || brandLogoUrl}
+                                            alt="Brand logo"
+                                            style={{
+                                                maxWidth: "165px",
+                                                maxHeight: "100px",
+                                                objectFit: "contain",
+                                            }}
+                                        />
                                     </Box>
+                                )}
+
+                                <Stack sx={{ gap: "32px" }}>
+                                    <Stack
+                                        sx={{
+                                            display: "flex",
+                                            gap: "12px",
+                                            alignItems: "flex-start",
+                                            justifyContent: "flex-start",
+                                        }}
+                                    >
+                                        <Button
+                                            disableRipple
+                                            sx={{
+                                                boxSizing: "content-box",
+                                                padding: "0",
+                                                border: "none",
+                                                background: "none",
+                                                textTransform: "none",
+                                                textDecoration: "underline",
+                                                color: theme[mode].blueDark,
+                                                "&:hover": {
+                                                    color: theme[mode].primary,
+                                                    textDecoration: "underline",
+                                                },
+                                                "&focus": {
+                                                    outline: "none",
+                                                },
+                                            }}
+                                            onClick={handleTriggerUpload}
+                                        >
+                                            {t("mspRegister.changeLogo")}
+                                        </Button>
+                                        <Button
+                                            disableRipple
+                                            sx={{
+                                                boxSizing: "content-box",
+                                                padding: "0",
+                                                border: "none",
+                                                background: "none",
+                                                textTransform: "none",
+                                                textDecoration: "underline",
+                                                color: theme[mode].blueDark,
+                                                "&:hover": {
+                                                    color: theme[mode].primary,
+                                                    textDecoration: "underline",
+                                                },
+                                                "&focus": {
+                                                    outline: "none",
+                                                    background: "none",
+                                                },
+                                            }}
+                                            onClick={handleRemoveLogo}
+                                        >
+                                            {t("mspRegister.removeLogo")}
+                                        </Button>
+                                    </Stack>
+
+                                    <Stack
+                                        sx={{
+                                            gap: "8px",
+                                            alignItems: "flex-start",
+                                            justifyContent: "flex-start",
+                                        }}
+                                    >
+                                        <Box sx={{ display: "flex", flexDirection: "row", gap: "12px", alignItems: "center" }}>
+                                            <CircleIcon color={theme[mode].blueDark} />
+                                            <TextRob14Font1Xs sx={{ color: theme[mode].gray, fontWeight: "400", fontSize: "14px" }}>
+                                                {t("whiteLabel.defaultSize")}
+                                            </TextRob14Font1Xs>
+                                        </Box>
+                                        <Box sx={{ display: "flex", flexDirection: "row", gap: "12px", alignItems: "center" }}>
+                                            <CircleIcon color={theme[mode].blueDark} />
+                                            <TextRob14Font1Xs sx={{ color: theme[mode].gray, fontWeight: "400", fontSize: "14px" }}>
+                                                {t("whiteLabel.maxSize")}
+                                            </TextRob14Font1Xs>
+                                        </Box>
+                                        <Box sx={{ display: "flex", flexDirection: "row", gap: "12px", alignItems: "center" }}>
+                                            <CircleIcon color={theme[mode].blueDark} />
+                                            <TextRob14Font1Xs sx={{ color: theme[mode].gray, fontWeight: "400", fontSize: "14px" }}>
+                                                {t("whiteLabel.acceptedFormats")}
+                                            </TextRob14Font1Xs>
+                                        </Box>
+                                    </Stack>
                                 </Stack>
                             </Box>
                         </>
