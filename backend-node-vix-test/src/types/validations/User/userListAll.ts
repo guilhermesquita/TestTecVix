@@ -37,6 +37,7 @@ export const userListAllSchema = z.object({
         message: "idBrandMaster must be a valid positive number",
       })
       .optional(),
+    nameBrandMaster: z.string().optional(),
     page: z
       .string()
       .optional()

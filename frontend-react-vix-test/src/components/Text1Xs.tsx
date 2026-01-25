@@ -3,9 +3,10 @@ import { SxProps, Typography } from "@mui/material";
 interface IProps {
   sx?: SxProps;
   children?: React.ReactNode;
+  onClick?: () => void;
 }
 
-export const TextRob14Font1Xs = ({ sx = {}, children }: IProps) => {
+export const TextRob14Font1Xs = ({ sx = {}, children, onClick }: IProps) => {
   return (
     <Typography
       sx={{
@@ -16,6 +17,7 @@ export const TextRob14Font1Xs = ({ sx = {}, children }: IProps) => {
         letterSpacing: "2%",
         ...sx,
       }}
+      onClick={onClick}
     >
       {children}
     </Typography>

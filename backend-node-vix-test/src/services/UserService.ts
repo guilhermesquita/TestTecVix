@@ -22,7 +22,7 @@ export class UserService {
       user.idBrandMaster !== null &&
       user.idBrandMaster !== (targetIdBrandMaster ?? null)
     ) {
-      throw new AppError(ERROR_MESSAGE.UNAUTHORIZED, STATUS_CODE.UNAUTHORIZED);
+      throw new AppError(ERROR_MESSAGE.FORBIDDEN, STATUS_CODE.FORBIDDEN);
     }
   }
 

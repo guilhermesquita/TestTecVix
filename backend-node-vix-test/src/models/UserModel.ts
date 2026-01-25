@@ -21,6 +21,18 @@ export class UserModel {
     if (params.query.isActive !== undefined) where.isActive = params.query.isActive;
     if (params.query.role) where.role = params.query.role;
     if (params.query.idBrandMaster) where.idBrandMaster = params.query.idBrandMaster;
+    if (params.query.nameBrandMaster) {
+      const search = params.query.nameBrandMaster.toLowerCase();
+      if ("vituax".includes(search)) {
+        where.OR = [
+          { brandMaster: { is: { brandName: { contains: params.query.nameBrandMaster } } } },
+          { idBrandMaster: null }
+        ];
+      } else {
+        where.brandMaster = { is: { brandName: { contains: params.query.nameBrandMaster } } };
+      }
+    }
+
 
     return prisma.user.count({ where });
   }
@@ -48,6 +60,17 @@ export class UserModel {
     if (params.query.isActive !== undefined) where.isActive = params.query.isActive;
     if (params.query.role) where.role = params.query.role;
     if (params.query.idBrandMaster) where.idBrandMaster = params.query.idBrandMaster;
+    if (params.query.nameBrandMaster) {
+      const search = params.query.nameBrandMaster.toLowerCase();
+      if ("vituax".includes(search)) {
+        where.OR = [
+          { brandMaster: { is: { brandName: { contains: params.query.nameBrandMaster } } } },
+          { idBrandMaster: null }
+        ];
+      } else {
+        where.brandMaster = { is: { brandName: { contains: params.query.nameBrandMaster } } };
+      }
+    }
 
     const [users, totalCount] = await Promise.all([
       prisma.user.findMany({
