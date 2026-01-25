@@ -39,5 +39,6 @@ export const errorHandler = (
   }
   const status = (err as any)?.status || 500;
   const message = (err as any)?.message || "Internal Server Error";
+  console.log(err);
   return res.status(status).json({ message });
 };
