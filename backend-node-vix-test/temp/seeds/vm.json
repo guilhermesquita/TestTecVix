@@ -1,6 +1,5 @@
 [
   {
-    "idVM": 1,
     "vmName": "Company Test",
     "vCPU": 2,
     "location": "BRAZIL_SOUTH",
@@ -15,7 +14,6 @@
     "updatedAt": "2025-03-21T13:43:50.000Z"
   },
   {
-    "idVM": 2,
     "vmName": "from UPIX Deleted",
     "vCPU": 2,
     "location": "BRAZIL_NORTHEAST",
@@ -31,7 +29,6 @@
     "deletedAt": "2025-03-21T15:10:17.000Z"
   },
   {
-    "idVM": 3,
     "vmName": "from VituaX",
     "vCPU": 2,
     "location": "BRAZIL_NORTHEAST",
@@ -45,7 +42,6 @@
     "updatedAt": "2025-03-21T14:45:05.000Z"
   },
   {
-    "idVM": 4,
     "vmName": "VM 01 Deleted",
     "vCPU": 8,
     "location": "BRAZIL_NORTHEAST",
@@ -61,7 +57,6 @@
     "deletedAt": "2025-04-22T17:14:58.000Z"
   },
   {
-    "idVM": 5,
     "vmName": "VM 02",
     "vCPU": 2,
     "location": "BRAZIL_NORTHEAST",
@@ -76,7 +71,6 @@
     "updatedAt": "2025-04-22T17:14:40.000Z"
   },
   {
-    "idVM": 6,
     "vmName": "Test X",
     "vCPU": 2,
     "location": "BRAZIL_NORTHEAST",
@@ -90,7 +84,6 @@
     "updatedAt": "2025-03-26T16:43:48.000Z"
   },
   {
-    "idVM": 7,
     "vmName": "CentoOs10",
     "vCPU": 3,
     "location": "BRAZIL_NORTHEAST",
@@ -105,7 +98,6 @@
     "updatedAt": "2025-03-27T13:08:05.000Z"
   },
   {
-    "idVM": 8,
     "vmName": "Win",
     "vCPU": 4,
     "location": "BRAZIL_NORTHEAST",
