@@ -49,7 +49,8 @@ export const useUserResources = () => {
   const { t } = useTranslation();
 
   const updateUser = async (idUser: string, data: IUpdateUser) => {
-    if (role !== "admin" && role !== "manager") return null;
+    if (idUser !== currentUserId && role !== "admin" && role !== "manager")
+      return null;
     const auth = await getAuth();
     setIsLoading(true);
     const response = await api.put<IUserDB>({
