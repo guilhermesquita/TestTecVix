@@ -149,7 +149,7 @@ export const useBrandMasterResources = () => {
       toast.error(response.message);
       return;
     }
-    toast.success(t("whiteLabel.dnsSaved"));
+    toast.success(t("whiteLabel.mspUpdateSuccess"));
     return response.data;
   };
 
@@ -193,41 +193,6 @@ export const useBrandMasterResources = () => {
       termsOfUse: dataResponse?.termsOfUse || null,
       privacyPolicy: dataResponse?.privacyPolicy || null,
     });
-
-    return response.data;
-  };
-
-  const updateDomain = async (domain: string) => {
-    if (role !== "admin" && role !== "manager") {
-      toast.error(t("generic.errorOlnlyAdmin"));
-      return;
-    }
-
-    if (role !== "admin" && true) {
-      toast.error(t("generic.errorOlnlyAdmin"));
-      return;
-    }
-
-    if (idBrandInfo !== idBrand) {
-      toast.error(t("generic.errorToSaveData"));
-      return;
-    }
-
-    const auth = await getAuth();
-    setIsLoading(true);
-    const response = await api.post({
-      url: `/dns/register`,
-      auth,
-      data: {
-        idBrandMaster: idBrand,
-        domain,
-      },
-    });
-    setIsLoading(false);
-    if (response.error) {
-      toast.error(response.message);
-      return;
-    }
 
     return response.data;
   };
@@ -380,15 +345,40 @@ export const useBrandMasterResources = () => {
     return response.data;
   };
 
+  const uploadBrandLogo = async (idBrandMaster: number, file: File) => {
+    if (!idBrandMaster || !file) return null;
+    const auth = await getAuth();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setIsLoading(true);
+    const response = await api.put<INewMSPResponse>({
+      url: `/brand-master/${idBrandMaster}/logo`,
+      auth: {
+        ...auth,
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    });
+    setIsLoading(false);
+
+    if (response.error) {
+      toast.error(response.message);
+      return null;
+    }
+
+    return response.data;
+  };
+
   return {
     isLoading,
     updateBrandMaster,
     updateBrandMasterInfo,
-    updateDomain,
     createAnewBrandMaster,
     listAllBrands,
     deleteBrandMaster,
     editBrandMaster,
     getSelf,
+    uploadBrandLogo,
   };
 };

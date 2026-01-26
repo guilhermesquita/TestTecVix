@@ -13,6 +13,7 @@ import { MonitorIcon } from "../../../../icons/MonitorIcon";
 import { PencilCicleIcon } from "../../../../icons/PencilCicleIcon";
 import { TerminalIcon } from "../../../../icons/TerminalIcon";
 import { useZTheme } from "../../../../stores/useZTheme";
+import { useZUserProfile } from "../../../../stores/useZUserProfile";
 import { IVMCreatedResponse } from "../../../../types/VMTypes";
 import { getVMOwnership } from "../../../../utils/getVMOwnership";
 import { makeEllipsis } from "../../../../utils/makeEllipsis";
@@ -20,8 +21,10 @@ import { useVmResource } from "../../../../hooks/useVmResource";
 import { useZMyVMsList } from "../../../../stores/useZMyVMsList";
 import { PlayCircleIcon } from "../../../../icons/PlayCircleIcon";
 import { StopCircleIcon } from "../../../../icons/StopCircleIcon";
+import { TrashIcon } from "../../../../icons/TrashIcon";
 import { ModalStartVM } from "../ModalStartVM";
 import { ModalStopVM } from "../ModalStopVM";
+import { ModalDeleteVM } from "../ModalDeleteVM";
 import { useStatusInfo } from "../../../../hooks/useStatusInfo";
 
 interface IProps {
@@ -34,9 +37,18 @@ export const RowVM = ({ vm, index }: IProps) => {
   const [row, setRow] = React.useState<IVMCreatedResponse>(vm);
   const [vmIDToStop, setVmIDToStop] = React.useState<number>(0);
   const [vmIDToStart, setVmIDToStart] = React.useState<number>(0);
+  const [vmIDToDelete, setVmIDToDelete] = React.useState<number>(0);
   const { currentVM, setCurrentVM } = useZMyVMsList();
+  const { idBrand, role } = useZUserProfile();
   const { getStatus } = useStatusInfo();
-  const { getOS, getVMById, isLoading: isLoadingVm } = useVmResource();
+  const {
+    getOS,
+    getVMById,
+    isLoading: isLoadingVm,
+    startVm,
+    stopVm,
+    deleteVM,
+  } = useVmResource();
 
   const idVM: number = Number(row.idVM);
   const labelId = `enhanced-table-checkbox-${index}`;
@@ -49,17 +61,36 @@ export const RowVM = ({ vm, index }: IProps) => {
   };
 
   const handleConfirVMStatusChange = async () => {
-    const updatedVM = await getVMById(vmIDToStop || vmIDToStart);
-    if (updatedVM) {
-      setRow(updatedVM);
+    let response = null;
+    if (vmIDToStop) {
+      response = await stopVm(vmIDToStop);
+    } else if (vmIDToStart) {
+      response = await startVm(vmIDToStart);
     }
+
+    if (response && !response.error && response.data) {
+      setRow(response.data);
+    }
+
     setVmIDToStop(0);
     setVmIDToStart(0);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (vmIDToDelete) {
+      const response = await deleteVM(vmIDToDelete);
+      if (response && "idVM") {
+        setRow(response as IVMCreatedResponse);
+      }
+      setVmIDToDelete(0);
+    }
   };
 
   useEffect(() => {
     setRow(vm);
   }, [vm]);
+
+  if (row.deletedAt) return null;
 
   return (
     <React.Fragment key={`row-fragment-${idVM}`}>
@@ -198,7 +229,7 @@ export const RowVM = ({ vm, index }: IProps) => {
               {getOS({ osValue: row.os }).hasTerminal && (
                 <Btn
                   disabled={isLoading || !getStatus(row).isRunning}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   sx={{
                     width: "40px",
                     height: "27px",
@@ -228,7 +259,7 @@ export const RowVM = ({ vm, index }: IProps) => {
               {getOS({ osValue: row.os }).hasMonitor && (
                 <Btn
                   disabled={isLoading || !getStatus(row).isRunning}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   sx={{
                     width: "40px",
                     height: "27px",
@@ -380,40 +411,55 @@ export const RowVM = ({ vm, index }: IProps) => {
               },
             }}
           >
-            {getStatus(row).isRunning && (
-              <IconButton
-                disabled={row.status === "STOPPED" || row.status === null}
-                onClick={() => setVmIDToStop(row.idVM)}
-                sx={{
-                  gap: "8px",
-                  ":hover": { opacity: 0.8 },
-                  ":disabled": { opacity: 0.5 },
-                }}
-              >
-                <StopCircleIcon fill={theme[mode].lightRed} />
-              </IconButton>
-            )}
-            {getStatus(row).isStopped && (
-              <IconButton
-                disabled={row.status === "RUNNING" || row.status === null}
-                onClick={() => setVmIDToStart(row.idVM)}
-                sx={{
-                  gap: "8px",
-                  ":hover": { opacity: 0.8 },
-                  ":disabled": { opacity: 0.5 },
-                }}
-              >
-                <PlayCircleIcon fill={theme[mode].greenLight} />
-              </IconButton>
-            )}
-            <Btn
-              onClick={() => handleClick(row)}
-              sx={{
-                borderRadius: "50%",
-              }}
-            >
-              <PencilCicleIcon fill={theme[mode].blueMedium} />
-            </Btn>
+            {(idBrand === null || idBrand === row.idBrandMaster) &&
+              (role === "admin" || role === "manager") && (
+                <>
+                  {getStatus(row).isRunning && (
+                    <IconButton
+                      disabled={row.status === "STOPPED" || row.status === null}
+                      onClick={() => setVmIDToStop(row.idVM)}
+                      sx={{
+                        gap: "8px",
+                        ":hover": { opacity: 0.8 },
+                        ":disabled": { opacity: 0.5 },
+                      }}
+                    >
+                      <StopCircleIcon fill={theme[mode].lightRed} />
+                    </IconButton>
+                  )}
+                  {getStatus(row).isStopped && (
+                    <IconButton
+                      disabled={row.status === "RUNNING" || row.status === null}
+                      onClick={() => setVmIDToStart(row.idVM)}
+                      sx={{
+                        gap: "8px",
+                        ":hover": { opacity: 0.8 },
+                        ":disabled": { opacity: 0.5 },
+                      }}
+                    >
+                      <PlayCircleIcon fill={theme[mode].greenLight} />
+                    </IconButton>
+                  )}
+                  <Btn
+                    onClick={() => handleClick(row)}
+                    sx={{
+                      borderRadius: "50%",
+                    }}
+                  >
+                    <PencilCicleIcon fill={theme[mode].blueMedium} />
+                  </Btn>
+                  {role === "admin" && (
+                    <Btn
+                      onClick={() => setVmIDToDelete(row.idVM)}
+                      sx={{
+                        borderRadius: "50%",
+                      }}
+                    >
+                      <TrashIcon fill={theme[mode].danger} width="20px" height="20px" />
+                    </Btn>
+                  )}
+                </>
+              )}
           </Stack>
         </TableCell>
       </TableRow>
@@ -432,6 +478,14 @@ export const RowVM = ({ vm, index }: IProps) => {
           idVM={vmIDToStop}
           onConfirm={handleConfirVMStatusChange}
           onCancel={() => setVmIDToStop(0)}
+        />
+      )}
+      {Boolean(vmIDToDelete) && (
+        <ModalDeleteVM
+          vmName={row.vmName}
+          idVM={vmIDToDelete}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setVmIDToDelete(0)}
         />
       )}
     </React.Fragment>

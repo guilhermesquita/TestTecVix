@@ -1,6 +1,8 @@
 export const ERROR_MESSAGE = {
   INVALID_CREDENTIALS: "Invalid credentials",
   INVALID_TOKEN: "Invalid token",
+  TOKEN_EXPIRED: "Token expired",
+  TOKEN_MISSING: "Token missing",
   INVALID_EMAIL_OR_PASSWORD: "Invalid email or password",
   INVALID_OPERATION: "Invalid operation",
   SERVER_ERROR: "Internal server error",
@@ -16,4 +18,6 @@ export const ERROR_MESSAGE = {
   INVALID_DATA: "Invalid data",
   USERNAME_ALREADY_EXISTS: "Username already exists",
   EMAIL_ALREADY_EXISTS: "Email already exists",
+  VM_NAME_ALREADY_EXISTS: "VM name already exists",
+  BRAND_MASTER_ALREADY_EXISTS: "Brand already exists",
 };

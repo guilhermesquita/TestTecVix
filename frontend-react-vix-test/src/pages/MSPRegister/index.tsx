@@ -8,9 +8,11 @@ import { useTranslation } from "react-i18next";
 import { TextRob16Font1S } from "../../components/Text1S";
 import { MspTableFilters } from "./MspTable/MspTableFilter";
 import { MspTable } from "./MspTable/MspTable";
+import { FormMSP } from "./components/FormMSP";
 import { MspModal } from "./MspModal";
 import { ModalDeleteMsp } from "./ModalDeleteMsp";
 import { useEffect, useState } from "react";
+import { Btn } from "../../components/Buttons/Btn";
 import { ModalUSerNotCreated } from "./ModalUSerNotCreated";
 import { ModalDeleteVMsFromMSP } from "./ModalDeleteVMsFromMSP";
 import { useBrandMasterResources } from "../../hooks/useBrandMasterResources";
@@ -32,6 +34,8 @@ export const MSPRegisterPage = () => {
     vmsToBeDeleted,
     setBrandMasterDeleted,
     setVmsToBeDeleted,
+    enterOnEditing,
+    setEnterOnEditing,
   } = useZMspRegisterPage();
   const { t } = useTranslation();
   const { isLoading } = useBrandMasterResources();
@@ -103,15 +107,6 @@ export const MSPRegisterPage = () => {
           />
         </Box>
       }
-      //  sx= estilização do componente pai
-      // children= elementos do componente
-      // className= estilização do componente
-      // isLoading= ativa um loaing na tela
-      // title= componente do titulo
-      // subtitle= componente do subtitulo
-      // keepSubtitle = false= mantem o subtitulo no caso de tela mobile ou pequena
-      // sxContainer= estilização do componente children
-      // sxTitleSubTitle= estilização do componente title e subtitle
     >
       {Boolean(isLoading || isLoadingDeleteVM) && <AbsoluteBackDrop open />}
       <Stack
@@ -134,31 +129,52 @@ export const MSPRegisterPage = () => {
           >
             <Stack
               sx={{
-                gap: "40px",
+                gap: enterOnEditing ? "0px" : "40px",
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                  gap: "24px",
-                }}
-              >
-                <TextRob16Font1S
+              {!enterOnEditing && (
+                <Box
                   sx={{
-                    color: theme[mode].black,
-                    fontSize: "16px",
-                    fontWeight: 500,
-                    lineHeight: "24px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: "24px",
                   }}
                 >
-                  {t("mspRegister.tableTitle")}
-                </TextRob16Font1S>
-                <MspTableFilters />
-              </Box>
-              <MspTable />
+                  <TextRob16Font1S
+                    sx={{
+                      color: theme[mode].black,
+                      fontSize: "16px",
+                      fontWeight: 500,
+                      lineHeight: "24px",
+                    }}
+                  >
+                    {t("mspRegister.tableTitle")}
+                  </TextRob16Font1S>
+                  <Stack flexDirection="row" gap="16px" alignItems="center">
+                    <MspTableFilters />
+                    <Btn
+                      onClick={() => {
+                        resetAllStepStates();
+                        setEnterOnEditing(true);
+                      }}
+                      sx={{
+                        padding: "8px 24px",
+                        borderRadius: "12px",
+                        backgroundColor: theme[mode].blue,
+                      }}
+                    >
+                      <TextRob16Font1S
+                        sx={{ color: theme[mode].btnText, fontWeight: "500" }}
+                      >
+                        {t("mspRegister.addMsp")}
+                      </TextRob16Font1S>
+                    </Btn>
+                  </Stack>
+                </Box>
+              )}
+              {enterOnEditing ? <FormMSP /> : <MspTable />}
             </Stack>
           </Stack>
         }

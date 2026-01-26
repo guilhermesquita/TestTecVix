@@ -1,1 +1,31 @@
-{}
+[
+  {
+    "username": "Admin",
+    "email": "admin@vituax.com",
+    "password": "$2a$12$NWXRy4pf0KyGjx0J35VuqukeK6h5RjrXP7h1v0khNV1P7DBIcfT1m",
+    "role": "admin",
+    "isActive": true
+  },
+  {
+    "username": "Manager",
+    "email": "manager@vituax.com",
+    "password": "$2a$12$6xGJD3JenZIWCB8Rca8l4el8NwKP/VqATsnjmmJEzxA/aC10IQXRG",
+    "role": "manager",
+    "isActive": true
+  },
+  {
+    "username": "Member",
+    "email": "member@vituax.com",
+    "password": "$2a$12$KMckw1erhSxvH/xEVGBzK.rNzxXiRjzMagN.TlTF.6q/QOmHyMRKK",
+    "role": "member",
+    "isActive": true
+  },
+  {
+    "username": "UserTest",
+    "email": "usertest@brandtest.com",
+    "password": "$2a$12$TpL.NzUgkSjTlhiQMKjS3uartuD6/giUoipQxV.qMF9wVz7IpE1e2",
+    "role": "admin",
+    "idBrandMaster": 4,
+    "isActive": true
+  }
+]

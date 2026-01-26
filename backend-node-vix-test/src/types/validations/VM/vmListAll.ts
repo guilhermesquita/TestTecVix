@@ -23,6 +23,10 @@ export const vmListAllSchema = querySchema.merge(
           message: `Status must be one of: ${Object.values(EVMStatus).join(", ")}`,
         },
       ),
+    onlyMine: z
+      .string()
+      .optional()
+      .default("false"),
     idBrandMaster: z
       .union([z.string(), z.number()]) // string or number
       .nullable()

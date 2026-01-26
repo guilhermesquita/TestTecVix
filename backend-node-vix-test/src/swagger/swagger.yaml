@@ -5,12 +5,438 @@ info:
   contact: {}
 servers:
   - url: "{{url}}"
+tags:
+  - name: auth
+    description: Authentication endpoints
+  - name: user
+    description: User management endpoints
+  - name: brandMaster
+    description: Brand Master endpoints
+  - name: VM
+    description: Virtual Machine endpoints
+  - name: uploads
+    description: File upload endpoints
 paths:
+  # Auth
+  /api/v1/auth/register:
+    post:
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password, email]
+              properties:
+                username: {type: string, example: "john_doe"}
+                password: {type: string, format: password, example: "Secret!123"}
+                email: {type: string, format: email, example: "john@example.com"}
+                profileImgUrl: {type: string, nullable: true}
+                role: {type: string, enum: [admin, member, manager]}
+                idBrandMaster: {type: number}
+                isActive: {type: boolean}
+      responses:
+        "201":
+          description: User registered
+        "400":
+          description: Validation error
+        "409":
+          description: User already exists
+
+  /api/v1/auth/login:
+    post:
+      tags: [auth]
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: {type: string, format: email, example: "john@example.com"}
+                password: {type: string, example: "Secret!123"}
+      responses:
+        "200":
+          description: Login successful
+        "401":
+          description: Invalid credentials
+
+  /api/v1/auth/token/{idUser}:
+    get:
+      tags: [auth]
+      summary: Refresh token
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Token refreshed
+
+  # Users
+  /api/v1/users:
+    get:
+      tags: [user]
+      summary: List users
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: page
+          in: query
+          schema: {type: number}
+        - name: limit
+          in: query
+          schema: {type: number}
+        - name: username
+          in: query
+          schema: {type: string}
+        - name: email
+          in: query
+          schema: {type: string}
+      responses:
+        "200":
+          description: List of users
+    post:
+      tags: [user]
+      summary: Create user (Manager/Admin)
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password, email, idBrandMaster]
+              properties:
+                username: {type: string}
+                password: {type: string}
+                email: {type: string}
+                idBrandMaster: {type: number}
+                role: {type: string}
+      responses:
+        "201":
+          description: Created
+
+  /api/v1/users/{idUser}:
+    get:
+      tags: [user]
+      summary: Get user by ID
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: User found
+    put:
+      tags: [user]
+      summary: Update user
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema: {type: string}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Updated
+    delete:
+      tags: [user]
+      summary: Delete user
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Deleted
+
+  /api/v1/users/{idUser}/image:
+    put:
+      tags: [user]
+      summary: Upload profile image
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema: {type: string}
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Image uploaded
+
+  /api/v1/users/change-status/{idUser}:
+    put:
+      tags: [user]
+      summary: Change user status
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Status changed
+
+  # Brand Master
+  /api/v1/brand-master/self:
+    get:
+      tags: [brandMaster]
+      summary: Get brand master info by domain
+      responses:
+        "200":
+          description: Brand Master info
+
+  /api/v1/brand-master:
+    get:
+      tags: [brandMaster]
+      summary: List brand masters
+      security: [{bearerAuth: []}]
+      responses:
+        "200":
+          description: List
+    post:
+      tags: [brandMaster]
+      summary: Create brand master
+      security: [{bearerAuth: []}]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                brandName: {type: string}
+                domain: {type: string}
+      responses:
+        "201":
+          description: Created
+
+  /api/v1/brand-master/{idBrandMaster}:
+    get:
+      tags: [brandMaster]
+      summary: Get brand master by ID
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idBrandMaster
+          in: path
+          required: true
+          schema: {type: number}
+      responses:
+        "200":
+          description: Found
+    put:
+      tags: [brandMaster]
+      summary: Update brand master
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idBrandMaster
+          in: path
+          required: true
+          schema: {type: number}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Updated
+    delete:
+      tags: [brandMaster]
+      summary: Delete brand master
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idBrandMaster
+          in: path
+          required: true
+          schema: {type: number}
+      responses:
+        "200":
+          description: Deleted
+
+  /api/v1/brand-master/{idBrandMaster}/logo:
+    put:
+      tags: [brandMaster]
+      summary: Upload brand logo
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idBrandMaster
+          in: path
+          required: true
+          schema: {type: number}
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Logo uploaded
+
+  /api/v1/vm:
+    get:
+      tags: [VM]
+      summary: List VMs
+      security: [{bearerAuth: []}]
+      responses:
+        "200":
+          description: List
+    post:
+      tags: [VM]
+      summary: Create VM
+      security: [{bearerAuth: []}]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: {type: string}
+                cpu: {type: number}
+                ram: {type: number}
+      responses:
+        "201":
+          description: Created
+
+  /api/v1/vm/{idVM}:
+    get:
+      tags: [VM]
+      summary: Get VM by ID
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idVM
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Found
+    put:
+      tags: [VM]
+      summary: Update VM
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idVM
+          in: path
+          required: true
+          schema: {type: string}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Updated
+    delete:
+      tags: [VM]
+      summary: Delete VM
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idVM
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Deleted
+
+  /api/v1/vm/{idVM}/metrics:
+    get:
+      tags: [VM]
+      summary: Get VM metrics
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: idVM
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Metrics
+
+  /api/v1/vm/{id}/start:
+    put:
+      tags: [VM]
+      summary: Start VM
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Started
+
+  /api/v1/vm/{id}/stop:
+    put:
+      tags: [VM]
+      summary: Stop VM
+      security: [{bearerAuth: []}]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Stopped
+
+  /api/v1/operating-systems:
+    get:
+      tags: [VM]
+      summary: Get operating systems
+      security: [{bearerAuth: []}]
+      responses:
+        "200":
+          description: List
+
+  # Uploads
+  /api/v1/uploads/{objectName}:
+    get:
+      tags: [uploads]
+      summary: Get file by object name
+      parameters:
+        - name: objectName
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: File found
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-tags:
-  - name: brandMaster
-  - name: VM
+      bearerFormat: JWT

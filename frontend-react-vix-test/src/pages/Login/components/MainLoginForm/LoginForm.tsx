@@ -43,7 +43,7 @@ export const LoginForm = ({
       <FormControl variant="standard">
         <InputLabel
           shrink
-          htmlFor="bootstrap-input-username"
+          htmlFor="bootstrap-input-email"
           className="username"
           sx={{
             color: theme[mode].dark,

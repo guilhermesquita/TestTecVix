@@ -51,38 +51,41 @@ model brandMaster {
 }
 
 model vM {
-  idVM          Int          @id @default(autoincrement())
+  idVM          Int           @id @default(autoincrement())
   vmName        String?
+  pass          String
+  location      ETaskLocation
   vCPU          Int
   ram           Int
   disk          Int
-  hasBackup     Boolean?     @default(false)
+  hasBackup     Boolean?      @default(false)
   idBrandMaster Int?
   status        EVMStatus?
-  createdAt     DateTime?    @default(now()) @db.DateTime(0)
-  updatedAt     DateTime?    @default(now()) @db.DateTime(0)
-  deletedAt     DateTime?    @db.DateTime(0)
+  createdAt     DateTime?     @default(now()) @db.DateTime(0)
+  updatedAt     DateTime?     @default(now()) @db.DateTime(0)
+  deletedAt     DateTime?     @db.DateTime(0)
   os            String?
-  brandMaster   brandMaster? @relation(fields: [idBrandMaster], references: [idBrandMaster])
 
-  @@index([idBrandMaster], map: "vM_idBrandMaster_fkey")
+  brandMaster   brandMaster?  @relation(fields: [idBrandMaster], references: [idBrandMaster])
+
+  @@index([idBrandMaster], map: "VM_idBrandMaster_fkey")
 }
 
 model user {
-  idUser        String    @id @default(uuid())
+  idUser        String        @id @default(uuid())
   username      String
   password      String
   email         String
   profileImgUrl String?
-  role          ERole     @default(member)
+  role          ERole         @default(member)
   idBrandMaster Int?
-  isActive      Boolean?  @default(true)
-  lastLoginDate DateTime? @db.DateTime(0)
-  createdAt     DateTime? @default(now()) @db.DateTime(0)
-  updatedAt     DateTime? @default(now()) @db.DateTime(0)
-  deletedAt     DateTime? @db.DateTime(0)
+  isActive      Boolean?      @default(true)
+  lastLoginDate DateTime?     @db.DateTime(0)
+  createdAt     DateTime?     @default(now()) @db.DateTime(0)
+  updatedAt     DateTime?     @default(now()) @db.DateTime(0)
+  deletedAt     DateTime?     @db.DateTime(0)
 
-  brandMaster brandMaster? @relation(fields: [idBrandMaster], references: [idBrandMaster])
+  brandMaster   brandMaster?  @relation(fields: [idBrandMaster], references: [idBrandMaster])
 
   @@index([idBrandMaster], map: "user_idBrandMaster_fkey")
 }
@@ -97,4 +100,14 @@ enum ERole {
   admin
   manager
   member
+}
+
+enum ETaskLocation {
+  BRAZIL_SOUTH
+  BRAZIL_SOUTHEAST
+  BRAZIL_NORTHEAST
+  US_EAST
+  US_WEST
+  EUROPE
+  ASIA
 }

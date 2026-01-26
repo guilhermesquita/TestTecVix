@@ -5,6 +5,7 @@ import { useZGlobalVar } from "../stores/useZGlobalVar";
 import { useZUserProfile } from "../stores/useZUserProfile";
 import { useNavigate } from "react-router-dom";
 import { useZResetAllStates } from "../stores/useZResetAllStates";
+import { useTranslation } from "react-i18next";
 
 interface IUserLoginResponse {
   token: string | null;
@@ -22,14 +23,13 @@ interface IUserLoginResponse {
   };
 }
 
-
 export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { setIsOpenModalUserNotActive, setLoginTime } =
-    useZGlobalVar();
+  const { setIsOpenModalUserNotActive, setLoginTime } = useZGlobalVar();
   const { setUser } = useZUserProfile();
   const { resetAllStates } = useZResetAllStates();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const goLogin = async ({
     username,
@@ -47,7 +47,7 @@ export const useLogin = () => {
     }
 
     const response = await api.post<IUserLoginResponse>({
-      url: "/user/login",
+      url: "/auth/login",
       data: {
         username: username || undefined,
         password,
@@ -57,10 +57,22 @@ export const useLogin = () => {
     });
 
     setIsLoading(false);
+
     if (response.error) {
-      toast.error(response.message);
+      const errorMessages: Record<string, string> = {
+        email: t("loginRegister.invalidEmailMessage"),
+        Password: t("loginRegister.invalidPasswordMessage"),
+        Unauthorized: t("loginRegister.invalidCredentials"),
+      };
+
+      const errorKey = Object.keys(errorMessages).find(
+        (key) => response.message.includes(key) || response.message === key,
+      );
+
+      toast.error(errorMessages[errorKey] ?? response.message);
       return;
     }
+
     if (!response.data.user?.isActive) {
       setIsOpenModalUserNotActive(true);
       return;
@@ -76,6 +88,7 @@ export const useLogin = () => {
       role: response.data.user.role,
     });
     setLoginTime(new Date());
+    navigate("/");
   };
 
   const goLogout = () => {

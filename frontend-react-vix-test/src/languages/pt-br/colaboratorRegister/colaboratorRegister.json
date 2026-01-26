@@ -44,5 +44,14 @@
   "ok": "OK",
   "registersManagement": "Gerenciamento de usuários",
   "pinCode": "PinCode",
-  "areYouSure": "Tem certeza que deseja deletar o usuário {{ username }}?"
+  "areYouSure": "Tem certeza que deseja deletar o usuário {{ username }}?",
+  "cannotDeactivateSelf": "Você não pode desativar seu próprio usuário.",
+  "confirmDelete": "Confirmar exclusão",
+  "deleteMessage": "Tem certeza que deseja excluir o usuário {{username}}? Esta ação não pode ser desfeita.",
+  "cancel": "Cancelar",
+  "delete": "Excluir",
+  "userCreatedSuccess": "Usuário criado com sucesso!",
+  "userUpdatedSuccess": "Usuário atualizado com sucesso!",
+  "userDeletedSuccess": "Usuário excluído com sucesso!",
+  "forbiddenMspError": "Você não tem permissão para gerenciar usuários dessa empresa"
 }

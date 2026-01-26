@@ -44,5 +44,14 @@
   "ok": "OK",
   "registersManagement": "Registers Management",
   "pinCode": "PinCode",
-  "areYouSure": "Are you sure you want to delete the {{ username }}?"
+  "areYouSure": "Are you sure you want to delete the {{ username }}?",
+  "cannotDeactivateSelf": "You cannot deactivate your own user.",
+  "confirmDelete": "Confirm Deletion",
+  "deleteMessage": "Are you sure you want to delete the user {{username}}? This action cannot be undone.",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "userCreatedSuccess": "User created successfully!",
+  "userUpdatedSuccess": "User updated successfully!",
+  "userDeletedSuccess": "User deleted successfully!",
+  "forbiddenMspError": "You don't have permission to manage users from this company"
 }

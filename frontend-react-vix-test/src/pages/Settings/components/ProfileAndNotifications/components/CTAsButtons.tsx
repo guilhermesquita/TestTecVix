@@ -3,17 +3,43 @@ import { useTranslation } from "react-i18next";
 import { useZTheme } from "../../../../../stores/useZTheme";
 import { TextRob16FontL } from "../../../../../components/TextL";
 import { toast } from "react-toastify";
+import { useUserResources } from "../../../../../hooks/useUserResources";
+import { useZUserProfile } from "../../../../../stores/useZUserProfile";
+import { useZFormProfileNotifications } from "../../../../../stores/useZFormProfileNotifications";
 
 export const CTAsButtons = () => {
   const { t } = useTranslation();
   const { theme, mode } = useZTheme();
+  const { updateUser } = useUserResources();
+  const { idUser } = useZUserProfile();
+  const {
+    userEmail,
+    userName,
+    userPhone,
+    password,
+    confirmPassword,
+    fullNameForm,
+    setFormProfileNotifications
+  } = useZFormProfileNotifications();
 
   const handleSave = async () => {
-    const allValid = true;
-    if (!allValid) return toast.error(t("profileAndNotifications.errorForm"));
-    const r = true;
-    if (r) return toast.success(t("generic.dataSavesuccess"));
-    return;
+    if (password.value && password.value !== confirmPassword.value) {
+      toast.error(t("colaboratorRegister.dontMatch"));
+      return;
+    }
+
+    const response = await updateUser(idUser, {
+      username: userName.value,
+      email: userEmail.value,
+      password: password.value || undefined,
+    });
+
+    if (response) {
+      setFormProfileNotifications({
+        password: { ...password, value: "" },
+        confirmPassword: { ...confirmPassword, value: "" }
+      });
+    }
   };
 
   return (
@@ -69,7 +95,7 @@ export const CTAsButtons = () => {
             maxWidth: "100%",
           },
         }}
-        onClick={() => {}}
+        onClick={() => { }}
       >
         <TextRob16FontL
           sx={{

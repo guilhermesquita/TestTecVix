@@ -4,20 +4,46 @@ import { API_VERSION, ROOT_PATH } from "../../src/constants/basePathRoutes";
 
 const BASE_PATH = API_VERSION.V1 + ROOT_PATH.BRANDMASTER;
 
+import { prismaMock } from "../singleton";
+
 describe("Testing API BrandMaster", () => {
-  let token: string;
+  it("should return brand info for matching domain in /self", async () => {
+    const brandData = {
+      idBrandMaster: 1,
+      brandName: "Brand Test",
+      domain: "test.local",
+      deletedAt: null,
+    };
 
-  it("should return a brand by id", async () => {});
+    // Mocking prisma response
+    prismaMock.brandMaster.findFirst.mockResolvedValue(brandData as any);
 
-  it("should return all brands", async () => {});
+    const res = await request(app)
+      .get(`${BASE_PATH}/self`)
+      .set("Host", "test.local");
 
-  it("should create new brand", async () => {});
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual(brandData);
+    expect(prismaMock.brandMaster.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          deletedAt: null,
+          domain: {
+            contains: "test.local"
+          }
+        }
+      })
+    );
+  });
 
-  it("should update a brand", async () => {});
+  it("should return null for non-matching domain in /self", async () => {
+    prismaMock.brandMaster.findFirst.mockResolvedValue(null);
 
-  it("should return not found message if a brand not exist on trying to update", async () => {});
+    const res = await request(app)
+      .get(`${BASE_PATH}/self`)
+      .set("Host", "unknown.local");
 
-  it("should delete a brand", async () => {});
-
-  it("should return not found message if a brand not exist on trying to delete", async () => {});
+    expect(res.status).toBe(200);
+    expect(res.body).toBeNull();
+  });
 });

@@ -5,6 +5,19 @@ import moment from "moment";
 
 export class BrandMasterModel {
   async getSelf(domain: string) {
+    if (!domain) return null;
+
+    const parts = domain.split(".");
+
+    const hostAppWeb = process.env.HOST_APP_WEB;
+
+    const hasPrefix =
+      (hostAppWeb && domain.includes(hostAppWeb) && parts.length > 1) ||
+      (parts.length > 2 && parts[0] !== "www");
+
+    if (!hasPrefix) {
+      return null;
+    }
     return prisma.brandMaster.findFirst({
       where: {
         domain: {
@@ -74,6 +87,12 @@ export class BrandMasterModel {
     return { totalCount, result: brands };
   }
 
+  async checkBrandMasterExists(brandName: string) {
+    return prisma.brandMaster.findFirst({
+      where: { brandName },
+    });
+  }
+
   async createNewBrandMaster(data: TBrandMaster) {
     return prisma.brandMaster.create({ data });
   }
@@ -86,9 +105,16 @@ export class BrandMasterModel {
   }
 
   async deleteBrandMaster(idBrandMaster: number) {
+    const brand = await this.getById(idBrandMaster);
+    if (!brand) return null;
+
     return prisma.brandMaster.update({
       where: { idBrandMaster },
-      data: { updatedAt: new Date(), deletedAt: new Date() },
+      data: {
+        updatedAt: new Date(),
+        deletedAt: new Date(),
+        brandName: `${brand.brandName} Deleted`,
+      },
     });
   }
 }

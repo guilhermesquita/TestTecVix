@@ -8,9 +8,10 @@ import {
 import { AppError } from "../errors/AppError";
 import { ERROR_MESSAGE } from "../constants/erroMessages";
 import { STATUS_CODE } from "../constants/statusCode";
+import { IBucketService } from "../types/Interfaces/IBucketService";
 
 export class BrandMasterService {
-  constructor() { }
+  constructor(private bucketService?: IBucketService) { }
   private brandMasterModel = new BrandMasterModel();
 
   async getSelf(domain: string) {
@@ -37,6 +38,23 @@ export class BrandMasterService {
       validData.pocOpenedAt = new Date();
     }
 
+    const hasBrandMaster = user.idBrandMaster !== null;
+
+    if (hasBrandMaster) {
+      throw new AppError(
+        ERROR_MESSAGE.FORBIDDEN,
+        STATUS_CODE.FORBIDDEN,
+      );
+    }
+
+    const brandMasterExists = await this.brandMasterModel.checkBrandMasterExists(validData.brandName!);
+    if (brandMasterExists) {
+      throw new AppError(
+        ERROR_MESSAGE.BRAND_MASTER_ALREADY_EXISTS,
+        STATUS_CODE.BAD_REQUEST,
+      );
+    }
+
     const newBrandMaster =
       await this.brandMasterModel.createNewBrandMaster(validData);
 
@@ -60,7 +78,7 @@ export class BrandMasterService {
 
   async updateBrandMaster(idBrandMaster: number, data: unknown, user: user) {
     if (user.idBrandMaster && user.idBrandMaster !== idBrandMaster) {
-      throw new AppError(ERROR_MESSAGE.UNAUTHORIZED, STATUS_CODE.UNAUTHORIZED);
+      throw new AppError(ERROR_MESSAGE.FORBIDDEN, STATUS_CODE.FORBIDDEN);
     }
     const validData = brandMasterSchema.parse(data);
     const oldBrandMaster = await this.brandMasterModel.getById(idBrandMaster);
@@ -69,6 +87,15 @@ export class BrandMasterService {
         ERROR_MESSAGE.BRAND_MASTER_NOT_FOUND,
         STATUS_CODE.NOT_FOUND,
       );
+    }
+    const brandMasterExists = await this.brandMasterModel.checkBrandMasterExists(validData.brandName!);
+    if (validData.brandName) {
+      if (oldBrandMaster.brandName !== validData.brandName && brandMasterExists) {
+        throw new AppError(
+          ERROR_MESSAGE.BRAND_MASTER_ALREADY_EXISTS,
+          STATUS_CODE.BAD_REQUEST,
+        );
+      }
     }
 
     if (
@@ -110,5 +137,35 @@ export class BrandMasterService {
     return {
       brandMaster: deletedBrand,
     };
+  }
+
+  async uploadLogo(idBrandMaster: number, file: Express.Multer.File, user: user) {
+    if (user.idBrandMaster && user.idBrandMaster !== idBrandMaster) {
+      throw new AppError(ERROR_MESSAGE.FORBIDDEN, STATUS_CODE.FORBIDDEN);
+    }
+
+    const brandMaster = await this.brandMasterModel.getById(idBrandMaster);
+    if (!brandMaster) {
+      throw new AppError(
+        ERROR_MESSAGE.BRAND_MASTER_NOT_FOUND,
+        STATUS_CODE.NOT_FOUND,
+      );
+    }
+
+    if (!this.bucketService) {
+      throw new AppError("Bucket service not configured", STATUS_CODE.SERVER_ERROR);
+    }
+
+    const { url } = await this.bucketService.uploadFile(
+      process.env.R2_BUCKET_NAME || "logos",
+      file
+    );
+
+    const updatedBrandMaster = await this.brandMasterModel.updateBrandMaster(
+      idBrandMaster,
+      { ...brandMaster, brandLogo: url } as any
+    );
+
+    return updatedBrandMaster;
   }
 }

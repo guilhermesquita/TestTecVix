@@ -27,5 +27,6 @@
   "placeholderObservations": "Observations about this MSP, origin, commercial manager, follows (on, up), etc.",
   "saveNotes": "Save notes",
   "editNotes": "Edit notes",
-  "createNotes": "Create notes"
+  "createNotes": "Create notes",
+  "noPermissionAction": "User does not have permission to execute this action"
 }

@@ -1,25 +1,28 @@
 import { create } from "zustand";
 
 export enum EOS {
-  ubuntu2404 = "ubuntu2404",
-  ubuntu2204 = "ubuntu2204",
-  ubuntu2004 = "ubuntu2004",
-  debian12 = "debian12",
-  debian11 = "debian11",
-  opensuse = "opensuse",
+  // Ubuntu
+  ubuntu2404 = "ubuntu-24-04",
+  ubuntu2204 = "ubuntu-22-04",
+
+  // Debian
+  debian12 = "debian-12",
+  debian13 = "debian-13",
+
+  // Arch
   archlinux = "archlinux",
-  fedora40 = "fedora40",
-  centos9 = "centos9",
-  centos10 = "centos10",
-  win10 = "win10",
-  win2019std = "win2019std",
-  win2022std = "win2022std",
-  edgeprotectv1 = "edgeprotectv1",
-  os3cx = "3cx",
-  yeastar = "yeastar",
-  mikrotik = "mikrotik",
-  pfsense = "pfsense",
-  rockylinux10 = "rockylinux10",
+
+  // CentOS
+  centos10 = "centos-10",
+
+  // Rocky Linux
+  rockylinux9 = "rockylinux-9",
+
+  // Windows Server
+  win2019std = "windows-2019",
+  win2022std = "windows-2022",
+
+  // Fallback
   notFound = "",
 }
 export interface IVMSugestion {
