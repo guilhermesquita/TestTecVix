@@ -1,4 +1,5 @@
-# Teste Técnico Vituax
+# Teste Técnico Vituax [FINALIZADO]
+### Atualizações no final do README
 
 ## 📋 Sumário
 
@@ -750,7 +751,67 @@ Verifique se:
 
 ---
 
-**Boa sorte! 🚀**
+## 🎯 Implementações Realizadas
 
-**Esperamos receber o link do seu repositório em breve!** 📬
+### ✅ Features Implementadas
+
+#### Autenticação e Autorização
+- Login e Register com JWT
+- Proteção de rotas
+- Sistema de permissões (admin/manager/member)
+
+#### Gerenciamento de VMs
+- CRUD completo
+- Filtros avançados
+- Start/Stop
+- Gráficos de uso (mockados)
+
+#### Cadastros
+- MSP (2 etapas)
+- Funcionários
+
+#### Configurações
+- White Label
+- Perfil do usuário
+
+### 🔑 Credenciais de Teste
+
+**Admin:**
+- Email: admin@vituax.com
+- Senha: Admin@123
+
+**Manager:**
+- Email: manager@vituax.com
+- Senha: Manager@123
+
+**Member:**
+- Email: member@vituax.com
+- Senha: Member@123
+
+**Member:**
+- Email: member@vituax.com
+- Senha: Member@123
+
+**Usuário admin com BrandMaster:**
+- Email: usertest@brandtest.com
+- Senha: User@123
+
+### 🛠️ Principais Mudanças Técnicas
+
+- Adicionados campos `pass`, `location` e `hasBackup` na tabela VM
+- Implementado sistema de autenticação JWT completo
+- Criados middlewares de autenticação e autorização
+- [Listar outras mudanças importantes]
+
+### 📦 Novas envs
+
+- HOST_APP_WEB=localhost
+
+### Guia para white label
+
+1. Crie um usuário admin
+2. Crie um brand master
+3. Adicione um domain "nomeDaBrandMaster.dominio(localhost):PORT 
+   - EX: http://vituax-msp.localhost:3000/
+   - Usando na url, o usuário é enviado para login e register com white-label
 
