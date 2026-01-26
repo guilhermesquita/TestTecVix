@@ -21,8 +21,8 @@
     "isActive": true
   },
   {
-    "username": "UserMock",
-    "email": "usermock@brandtest.com",
+    "username": "UserTest",
+    "email": "usertest@brandtest.com",
     "password": "$2a$12$TpL.NzUgkSjTlhiQMKjS3uartuD6/giUoipQxV.qMF9wVz7IpE1e2",
     "role": "admin",
     "idBrandMaster": 4,
