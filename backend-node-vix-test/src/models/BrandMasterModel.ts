@@ -5,6 +5,19 @@ import moment from "moment";
 
 export class BrandMasterModel {
   async getSelf(domain: string) {
+    if (!domain) return null;
+
+    const parts = domain.split(".");
+
+    const hostAppWeb = process.env.HOST_APP_WEB;
+
+    const hasPrefix =
+      (hostAppWeb && domain.includes(hostAppWeb) && parts.length > 1) ||
+      (parts.length > 2 && parts[0] !== "www");
+
+    if (!hasPrefix) {
+      return null;
+    }
     return prisma.brandMaster.findFirst({
       where: {
         domain: {
